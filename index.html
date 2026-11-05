@@ -3,8 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>KNOW.</title>
-
+<title>KNOW. - Host Control Panel</title>
 <style>
 * {
   box-sizing: border-box;
@@ -12,247 +11,301 @@
 
 body {
   margin: 0;
-  padding: 20px;
-  /* ↓背景を緑色から「方眼」に変更しました */
+  padding: 40px 20px;
   background-color: #009D4E;
   background-size: 60px 60px;
   background-image: 
-    linear-gradient(to right, rgba(255, 255, 255, 0.2) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(255, 255, 255, 0.2) 1px, transparent 1px);
-  
-  color: white;
-  font-family: sans-serif;
+    linear-gradient(to right, rgba(255, 255, 255, 0.15) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.15) 1px, transparent 1px);
+  color: #1a1a1a;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
 }
 
+/* メインコンテナ：雑誌の誌面のようなグリッド構成 */
+.container {
+  max-width: 900px;
+  margin: 0 auto;
+  background: #fcfbf9; /* 温かみのあるオフホワイト紙面カラー */
+  border-radius: 4px;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+  overflow: hidden;
+  border: 2px solid #1a1a1a;
+}
 
 header {
-  text-align: center;
-  padding: 20px;
+  padding: 30px 40px 20px;
+  border-bottom: 2px solid #1a1a1a;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  background: #fff;
 }
 
-/* 画像用のCSS調整 */
 h1 {
   margin: 0;
+  font-size: 2.2rem;
+  letter-spacing: -0.05em;
+  font-weight: 900;
 }
 
-h1 img {
-  max-width: 100%;
-  height: auto;
+header p {
+  margin: 0;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: #666;
+  font-weight: 600;
 }
 
-.score {
-  background: #202f45;
-  border-radius: 12px;
-  padding: 20px;
-  text-align: center;
-  margin-bottom: 25px;
+/* コントロール全体レイアウト */
+.panel-body {
+  padding: 40px;
 }
 
-.score strong {
-  display: block;
-  font-size: 36px;
+.section-title {
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  border-bottom: 2px solid #1a1a1a;
+  padding-bottom: 8px;
+  margin-bottom: 20px;
+  font-weight: 700;
+  color: #1a1a1a;
+}
+
+/* スコア表示エリア（インダストリアルなボックス） */
+.score-box {
+  background: #1a1a1a;
+  color: #fff;
+  padding: 20px 30px;
+  border-radius: 2px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 40px;
+}
+
+.score-box span {
+  font-size: 0.85rem;
+  letter-spacing: 0.1em;
+  color: #aaa;
+  text-transform: uppercase;
+}
+
+.score-box strong {
+  font-size: 2.5rem;
   color: #ffd166;
+  font-family: monospace;
+}
+
+/* 問題ボードのグリッド */
+.board-group {
+  margin-bottom: 30px;
 }
 
 .board {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 10px;
-  margin-bottom: 25px;
+  gap: 12px;
 }
 
-.category {
-  text-align: center;
-  color: #62b5ff;
-  margin: 25px 0 12px;
-}
-
+/* タイルデザイン：あえてソリッドで少し無機質な、でも洗練された長方形 */
 .tile {
-  background: #245b91;
-  color: white;
-  border: none;
-  border-radius: 12px;
-  padding: 25px 5px;
-  font-size: 23px;
-  font-weight: bold;
+  background: #fff;
+  color: #1a1a1a;
+  border: 2px solid #1a1a1a;
+  border-radius: 2px;
+  padding: 22px 10px;
+  font-size: 1.25rem;
+  font-weight: 700;
   cursor: pointer;
+  transition: all 0.15s ease;
+  text-align: center;
+}
+
+.tile:hover:not(:disabled) {
+  background: #1a1a1a;
+  color: #fff;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 0 #1a1a1a;
 }
 
 .tile:disabled {
-  background: #394252;
-  color: #8993a2;
+  background: #e0deda;
+  color: #888;
+  border-color: #ccc;
   cursor: default;
 }
 
+/* モーダル（誌面レイアウト風） */
 .modal {
   display: none;
   position: fixed;
   inset: 0;
-  background: rgba(0,0,0,.85);
+  background: rgba(26,26,26,0.8);
   justify-content: center;
   align-items: center;
   padding: 20px;
+  backdrop-filter: blur(4px);
 }
 
 .modal-content {
-  background: #202f45;
-  border: 1px solid #62b5ff;
-  border-radius: 18px;
-  padding: 25px;
+  background: #fcfbf9;
+  border: 2px solid #1a1a1a;
+  border-radius: 4px;
+  padding: 40px;
   width: 100%;
-  max-width: 450px;
-  text-align: center;
+  max-width: 520px;
+  box-shadow: 0 15px 30px rgba(0,0,0,0.3);
+}
+
+.modal-content h2 {
+  margin-top: 0;
+  font-size: 1.1rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: #666;
+  border-bottom: 1px solid #ddd;
+  padding-bottom: 10px;
 }
 
 .question {
-  font-size: 21px;
-  margin: 25px 0;
+  font-size: 1.4rem;
+  margin: 30px 0;
+  font-weight: 700;
+  line-height: 1.4;
 }
 
 .answer {
   display: none;
-  color: #ffd166;
-  font-size: 20px;
+  background: #fff;
+  border-left: 4px solid #009D4E;
+  padding: 15px;
+  font-size: 1.2rem;
   margin: 20px 0;
+  font-weight: bold;
 }
 
-button {
-  cursor: pointer;
+/* アクションボタン（ポスターや雑誌のタグのようなフラットで強いボタン） */
+.btn-row {
+  display: flex;
+  gap: 10px;
+  margin-top: 20px;
 }
 
 .action {
-  border: none;
-  border-radius: 9px;
-  padding: 13px 18px;
-  margin: 5px;
-  font-size: 15px;
+  flex: 1;
+  border: 2px solid #1a1a1a;
+  border-radius: 2px;
+  padding: 14px 10px;
+  font-size: 0.95rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: 0.1s;
+  text-transform: uppercase;
 }
 
-.reveal {
-  background: #397fc0;
-  color: white;
+.action:hover {
+  opacity: 0.85;
 }
 
-.correct {
-  background: #238b62;
-  color: white;
-}
+.reveal { background: #fff; color: #1a1a1a; }
+.correct { background: #009D4E; color: #fff; }
+.wrong { background: #d90429; color: #fff; }
+.close-btn { background: #1a1a1a; color: #fff; width: 100%; margin-top: 15px; }
 
-.wrong {
-  background: #bd4c55;
-  color: white;
-}
-
-.close {
-  background: #596579;
-  color: white;
+.reset-container {
+  text-align: center;
+  margin-top: 40px;
+  border-top: 1px solid #ddd;
+  padding-top: 25px;
 }
 
 .reset {
-  display: block;
-  margin: 30px auto;
-  background: #596579;
-  color: white;
-  border: none;
-  border-radius: 9px;
-  padding: 12px 20px;
+  background: transparent;
+  color: #666;
+  border: 2px solid #ccc;
+  border-radius: 2px;
+  padding: 10px 20px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.15s;
+}
+
+.reset:hover {
+  border-color: #1a1a1a;
+  color: #1a1a1a;
 }
 </style>
 </head>
 
 <body>
 
-<!-- ↓画像名とサイト名を指定通りに変更しました -->
-<header>
-  <h1>
-    <img src="titlelogo_white.png" alt="KNOW.">
-  </h1>
-  <p>I KNOW. DO YOU?</p>
-</header>
+<div class="container">
+  <header>
+    <h1>KNOW.</h1>
+    <p>Host Control Panel</p>
+  </header>
 
-<div class="score">
-  CURRENT SCORE
-  <strong id="score">0</strong>
-  POINTS
+  <div class="panel-body">
+    <div class="score-box">
+      <span>Current Score</span>
+      <div><strong id="score">0</strong> <small style="font-size: 1rem; color:#aaa;">PTS</small></div>
+    </div>
+
+    <div class="board-group">
+      <div class="section-title">📚 雑学 / Trivia</div>
+      <div class="board" id="trivia"></div>
+    </div>
+
+    <div class="board-group">
+      <div class="section-title">🌎 常識 / General Knowledge</div>
+      <div class="board" id="general"></div>
+    </div>
+
+    <div class="reset-container">
+      <button class="reset" onclick="resetGame()">ゲームをリセット</button>
+    </div>
+  </div>
 </div>
 
-<h2 class="category">📚 雑学</h2>
-<div class="board" id="trivia"></div>
-
-<h2 class="category">🌎 常識</h2>
-<div class="board" id="general"></div>
-
-<button class="reset" onclick="resetGame()">
-  ゲームをリセット
-</button>
-
+<!-- モーダルウィンドウ -->
 <div class="modal" id="modal">
   <div class="modal-content">
-
     <h2 id="questionTitle">QUESTION</h2>
-
     <div class="question" id="question"></div>
 
-    <button class="action reveal" onclick="showAnswer()">
+    <button class="action reveal" onclick="showAnswer()" style="width:100%;">
       答えを見る
     </button>
 
     <div class="answer" id="answer"></div>
 
     <div id="judge" style="display:none">
-      <button class="action correct" onclick="judge(true)">
-        正解！
-      </button>
-
-      <button class="action wrong" onclick="judge(false)">
-        不正解
-      </button>
+      <div class="btn-row">
+        <button class="action correct" onclick="judge(true)">正解！ (+Pts)</button>
+        <button class="action wrong" onclick="judge(false)">不正解</button>
+      </div>
     </div>
 
-    <button class="action close" onclick="closeModal()">
-      閉じる
+    <button class="action close-btn" onclick="closeModal()">
+      パネルを閉じる
     </button>
-
   </div>
 </div>
 
 <script>
-
 const questions = {
   trivia: [
-    {
-      point: 10,
-      q: "タコの足は何本？",
-      a: "8本"
-    },
-    {
-      point: 20,
-      q: "パンダの主食は何？",
-      a: "竹"
-    },
-    {
-      point: 30,
-      q: "世界で最も面積が大きい国は？",
-      a: "ロシア"
-    }
+    { point: 10, q: "タコの足は何本？", a: "8本" },
+    { point: 20, q: "パンダの主食は何？", a: "竹" },
+    { point: 30, q: "世界で最も面積が大きい国は？", a: "ロシア" }
   ],
-
   general: [
-    {
-      point: 10,
-      q: "日本の首都は？",
-      a: "東京"
-    },
-    {
-      point: 20,
-      q: "1年は何か月？",
-      a: "12か月"
-    },
-    {
-      point: 30,
-      q: "日本で一番高い山は？",
-      a: "富士山"
-    }
+    { point: 10, q: "日本の首都は？", a: "東京" },
+    { point: 20, q: "1年は何か月？", a: "12か月" },
+    { point: 30, q: "日本で一番高い山は？", a: "富士山" }
   ]
 };
 
@@ -261,93 +314,63 @@ let currentQuestion = null;
 let currentTile = null;
 
 function createBoard() {
-
   for (const category in questions) {
-
     const board = document.getElementById(category);
-
-    questions[category].forEach((item, index) => {
-
+    questions[category].forEach((item) => {
       const button = document.createElement("button");
-
       button.className = "tile";
-      button.textContent = item.point + "点";
-
+      button.textContent = item.point + " pts";
       button.onclick = () => {
         openQuestion(item, button);
       };
-
-      board.appendChild(button);
-
+      board.expend ? null : board.appendChild(button);
     });
   }
 }
 
 function openQuestion(item, tile) {
-
   currentQuestion = item;
   currentTile = tile;
 
-  document.getElementById("questionTitle").textContent =
-    item.point + " POINTS";
-
-  document.getElementById("question").textContent =
-    item.q;
-
-  document.getElementById("answer").textContent =
-    "正解：" + item.a;
-
+  document.getElementById("questionTitle").textContent = "QUESTION — " + item.point + " PTS";
+  document.getElementById("question").textContent = item.q;
+  document.getElementById("answer").textContent = "正解：" + item.a;
   document.getElementById("answer").style.display = "none";
-
   document.getElementById("judge").style.display = "none";
-
   document.getElementById("modal").style.display = "flex";
 }
 
 function showAnswer() {
-
   document.getElementById("answer").style.display = "block";
-
   document.getElementById("judge").style.display = "block";
 }
 
 function judge(isCorrect) {
-
   if (isCorrect) {
     score += currentQuestion.point;
   }
-
   document.getElementById("score").textContent = score;
-
   currentTile.disabled = true;
-  currentTile.textContent = "使用済み";
-
+  currentTile.textContent = "USED";
   closeModal();
 }
 
 function closeModal() {
-
   document.getElementById("modal").style.display = "none";
 }
 
 function resetGame() {
-
   if (!confirm("ゲームを最初からやり直しますか？")) {
     return;
   }
-
   score = 0;
-
   document.getElementById("score").textContent = score;
-
   document.getElementById("trivia").innerHTML = "";
   document.getElementById("general").innerHTML = "";
-
   createBoard();
 }
 
 createBoard();
-
 </script>
 
 </body>
