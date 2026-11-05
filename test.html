@@ -11,7 +11,7 @@
 
 body {
   margin: 0;
-  padding: 20px 10px; /* スマホで見やすいよう余白を少し調整 */
+  padding: 20px 10px;
   background-color: #009D4E;
   background-size: 60px 60px;
   background-image: 
@@ -49,7 +49,7 @@ h1 {
 }
 
 h1 img {
-  max-width: 140px; /* スマホで大きすぎないように調整 */
+  max-width: 140px;
   height: auto;
   display: block;
 }
@@ -67,15 +67,41 @@ header p {
   padding: 20px;
 }
 
+/* 添付画像のピル型＋両サイドライン装飾（CONTENTS用） */
+.content-divider {
+  display: flex;
+  align-items: center;
+  text-align: center;
+  margin: 25px 0 20px 0;
+}
+
+.content-divider::before,
+.content-divider::after {
+  content: "";
+  flex: 1;
+  border-bottom: 2px solid #1a1a1a;
+}
+
+.content-badge {
+  display: inline-block;
+  padding: 8px 24px;
+  border: 2px solid #1a1a1a;
+  border-radius: 50px;
+  background: #fff;
+  color: #1a1a1a;
+  font-size: 0.85rem;
+  font-weight: 800;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  margin: 0 15px;
+  box-shadow: 0 2px 0 #1a1a1a;
+}
+
 .section-title {
   font-size: 0.85rem;
-  text-transform: uppercase;
-  letter-spacing: 0.15em;
-  border-bottom: 2px solid #1a1a1a;
-  padding-bottom: 6px;
-  margin-bottom: 15px;
   font-weight: 700;
   color: #1a1a1a;
+  margin-bottom: 10px;
 }
 
 /* スコア表示エリア */
@@ -87,7 +113,7 @@ header p {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 30px;
+  margin-bottom: 20px;
 }
 
 .score-box span {
@@ -103,7 +129,7 @@ header p {
   font-family: monospace;
 }
 
-/* 問題ボードのグリッド（スマホで見やすいよう3列で折り返す） */
+/* 問題ボードのグリッド */
 .board-group {
   margin-bottom: 25px;
 }
@@ -114,7 +140,7 @@ header p {
   gap: 10px;
 }
 
-/* タイルデザイン：押しやすいサイズ感に */
+/* タイルデザイン */
 .tile {
   background: #fff;
   color: #1a1a1a;
@@ -248,13 +274,18 @@ header p {
       <div><strong id="score">0</strong> <small style="font-size: 0.9rem; color:#aaa;">PTS</small></div>
     </div>
 
+    <!-- ここにCONTENTSの大見出し（画像風の装飾）を配置 -->
+    <div class="content-divider">
+      <span class="content-badge">CONTENTS</span>
+    </div>
+
     <div class="board-group">
-      <div class="section-title">（　雑学　）</div>
+      <div class="section-title">（ 雑学 ）</div>
       <div class="board" id="trivia"></div>
     </div>
 
     <div class="board-group">
-      <div class="section-title">（　一般常識　）</div>
+      <div class="section-title">（ 一般常識 ）</div>
       <div class="board" id="general"></div>
     </div>
 
