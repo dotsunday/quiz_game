@@ -270,3 +270,181 @@ header p {
       <img src="titlelogo_black_nyan.png" alt="KNOW.">
     </h1>
     <p>I KNOW. DO YOU?</p>
+  </header>
+
+  <div class="panel-body">
+    <div class="score-box">
+      <span>SCORE</span>
+      <div><strong id="score">0</strong> <small style="font-size: 0.9rem; color:#aaa;">pts</small></div>
+    </div>
+
+    <!-- CONTENTSの大見出し -->
+    <div class="content-divider">
+      <span class="content-badge">CONTENTS</span>
+    </div>
+
+    <div class="board-group">
+      <div class="section-title">（ 　文学　 ）</div>
+      <div class="board" id="language"></div>
+    </div>
+
+    <div class="board-group">
+      <div class="section-title">（ 　雑学　 ）</div>
+      <div class="board" id="trivia"></div>
+    </div>
+
+    <div class="board-group">
+      <div class="section-title">（ 　文化・芸術　 ）</div>
+      <div class="board" id="culture"></div>
+    </div>
+
+     <div class="board-group">
+      <div class="section-title">（ 　アニメ　 ）</div>
+      <div class="board" id="anime"></div>
+    </div>
+
+    <div class="board-group">
+      <div class="section-title">（ 　ネットスラング　 ）</div>
+      <div class="board" id="net"></div>
+    </div>
+    
+    <div class="reset-container">
+      <button class="reset" onclick="resetGame()">RESET</button>
+    </div>
+  </div>
+</div>
+
+<!-- モーダルウィンドウ -->
+<div class="modal" id="modal">
+  <div class="modal-content">
+    <h2 id="questionTitle">QUESTION</h2>
+    <div class="question" id="question"></div>
+
+    <button class="action reveal" onclick="showAnswer()" style="width:100%;">
+      答え
+    </button>
+
+    <div class="answer" id="answer"></div>
+
+    <div id="judge" style="display:none">
+      <div class="btn-row">
+        <button class="action correct" onclick="judge(true)">正解！ (+Pts)</button>
+        <button class="action wrong" onclick="judge(false)">不正解</button>
+      </div>
+    </div>
+
+    <button class="action close-btn" onclick="closeModal()">
+      CLOSE
+    </button>
+  </div>
+</div>
+
+<script>
+const questions = {
+  language: [
+    { point: 10, q: "タコの足は何本？", a: "8本" },
+    { point: 20, q: "語源はポルトガル語の「コンフェイト」で、戦国時代に日本へ伝わった、星のような形の砂糖菓子は何？", a: "金平糖" },
+    { point: 30, q: "世界で最も面積が大きい国は？", a: "ロシア" },
+    { point: 40, q: "（4問目の問題）", a: "（答え）" },
+    { point: 50, q: "（5問目の問題）", a: "（答え）" }
+  ],
+  trivia: [
+    { point: 10, q: "日本の首都は？", a: "東京" },
+    { point: 20, q: "語源はポルトガル語の「コンフェイト」で、戦国時代に日本へ伝わった、星のような形の砂糖菓子は何？", a: "金平糖" },
+    { point: 30, q: "日本で一番高い山は？", a: "富士山" },
+    { point: 40, q: "（4問目の問題）", a: "（答え）" },
+    { point: 50, q: "（5問目の問題）", a: "（答え）" }
+  ],
+  culture: [
+    { point: 10, q: "タコの足は何本？", a: "8本" },
+    { point: 20, q: "語源はポルトガル語の「コンフェイト」で、戦国時代に日本へ伝わった、星のような形の砂糖菓子は何？", a: "金平糖" },
+    { point: 30, q: "57577で構成される和歌や短歌のことをその文字数からなんと呼ぶ？", a: "三十一文字(みそひともじ)" },
+    { point: 40, q: "（4問目の問題）", a: "（答え）" },
+    { point: 50, q: "（5問目の問題）", a: "（答え）" }
+  ],
+  anime: [
+    { point: 10, q: "タコの足は何本？", a: "8本" },
+    { point: 20, q: "語源はポルトガル語の「コンフェイト」で、戦国時代に日本へ伝わった、星のような形の砂糖菓子は何？", a: "金平糖" },
+    { point: 30, q: "57577で構成される和歌や短歌のことをその文字数からなんと呼ぶ？", a: "三十1文字(みそひともじ)" },
+    { point: 40, q: "（4問目の問題）", a: "（答え）" },
+    { point: 50, q: "（5問目の問題）", a: "（答え）" }
+  ],
+  net: [
+    { point: 10, q: "タコの足は何本？", a: "8本" },
+    { point: 20, q: "語源はポルトガル語の「コンフェイト」で、戦国時代に日本へ伝わった、星のような形の砂糖菓子は何？", a: "金平糖" },
+    { point: 30, q: "57577で構成される和歌や短歌のことをその文字数からなんと呼ぶ？", a: "三十一文字(みそひともじ)" },
+    { point: 40, q: "（4問目の問題）", a: "（答え）" },
+    { point: 50, q: "（5問目の問題）", a: "（答え）" }
+  ],
+};
+
+let score = 0;
+let currentQuestion = null;
+let currentTile = null;
+
+function createBoard() {
+  for (const category in questions) {
+    const board = document.getElementById(category);
+    if (!board) continue;
+    board.innerHTML = "";
+
+    questions[category].forEach((item) => {
+      const button = document.createElement("button");
+      button.className = "tile";
+      
+      // ptsをつけず、数字（例: 10, 20...）だけをそのまま表示
+      button.textContent = item.point;
+      
+      button.onclick = () => {
+        openQuestion(item, button);
+      };
+      board.appendChild(button);
+    });
+  }
+}
+
+function openQuestion(item, tile) {
+  currentQuestion = item;
+  currentTile = tile;
+
+  document.getElementById("questionTitle").textContent = item.point + " POINTS";
+  document.getElementById("question").textContent = item.q;
+  document.getElementById("answer").textContent = "正解：" + item.a;
+  document.getElementById("answer").style.display = "none";
+  document.getElementById("judge").style.display = "none";
+  document.getElementById("modal").style.display = "flex";
+}
+
+function showAnswer() {
+  document.getElementById("answer").style.display = "block";
+  document.getElementById("judge").style.display = "block";
+}
+
+function judge(isCorrect) {
+  if (isCorrect) {
+    score += currentQuestion.point;
+  }
+  document.getElementById("score").textContent = score;
+  currentTile.disabled = true;
+  currentTile.textContent = "USED";
+  closeModal();
+}
+
+function closeModal() {
+  document.getElementById("modal").style.display = "none";
+}
+
+function resetGame() {
+  if (!confirm("最初からやりなおしますか？")) {
+    return;
+  }
+  score = 0;
+  document.getElementById("score").textContent = score;
+  createBoard();
+}
+
+createBoard();
+</script>
+
+</body>
+</html>
