@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Panel Quiz Game</title>
+<title>KNOW. - 参加者ビュー</title>
 
 <style>
 * {
@@ -13,7 +13,11 @@
 body {
   margin: 0;
   padding: 20px;
-  background: #101827;
+  background-color: #009D4E;
+  background-size: 60px 60px;
+  background-image: 
+    linear-gradient(to right, rgba(255, 255, 255, 0.2) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.2) 1px, transparent 1px);
   color: white;
   font-family: sans-serif;
 }
@@ -24,8 +28,12 @@ header {
 }
 
 h1 {
-  color: #62b5ff;
-  letter-spacing: 3px;
+  margin: 0;
+}
+
+h1 img {
+  max-width: 100%;
+  height: auto;
 }
 
 .score {
@@ -55,6 +63,7 @@ h1 {
   margin: 25px 0 12px;
 }
 
+/* 参加者画面のタイルはクリック不可にするためカーソルをデフォルトに */
 .tile {
   background: #245b91;
   color: white;
@@ -63,13 +72,12 @@ h1 {
   padding: 25px 5px;
   font-size: 23px;
   font-weight: bold;
-  cursor: pointer;
+  cursor: default;
 }
 
-.tile:disabled {
+.tile.opened {
   background: #394252;
   color: #8993a2;
-  cursor: default;
 }
 
 .modal {
@@ -97,13 +105,6 @@ h1 {
   margin: 25px 0;
 }
 
-.answer {
-  display: none;
-  color: #ffd166;
-  font-size: 20px;
-  margin: 20px 0;
-}
-
 button {
   cursor: pointer;
 }
@@ -116,34 +117,10 @@ button {
   font-size: 15px;
 }
 
-.reveal {
-  background: #397fc0;
-  color: white;
-}
-
-.correct {
-  background: #238b62;
-  color: white;
-}
-
-.wrong {
-  background: #bd4c55;
-  color: white;
-}
-
 .close {
   background: #596579;
   color: white;
-}
-
-.reset {
-  display: block;
-  margin: 30px auto;
-  background: #596579;
-  color: white;
-  border: none;
-  border-radius: 9px;
-  padding: 12px 20px;
+  width: 100%;
 }
 </style>
 </head>
@@ -151,12 +128,14 @@ button {
 <body>
 
 <header>
-  <h1>PANEL QUIZ</h1>
-  <p>QUIZ GAME</p>
+  <h1>
+    <img src="titlelogo_white.png" alt="KNOW.">
+  </h1>
+  <p>I KNOW. DO YOU? (Participant View)</p>
 </header>
 
 <div class="score">
-  CURRENT SCORE
+  YOUR SCORE
   <strong id="score">0</strong>
   POINTS
 </div>
@@ -167,172 +146,51 @@ button {
 <h2 class="category">🌎 常識</h2>
 <div class="board" id="general"></div>
 
-<button class="reset" onclick="resetGame()">
-  ゲームをリセット
-</button>
-
+<!-- 問題表示用モーダル（司会者が開いたときに連動して表示される） -->
 <div class="modal" id="modal">
   <div class="modal-content">
-
     <h2 id="questionTitle">QUESTION</h2>
-
-    <div class="question" id="question"></div>
-
-    <button class="action reveal" onclick="showAnswer()">
-      答えを見る
-    </button>
-
-    <div class="answer" id="answer"></div>
-
-    <div id="judge" style="display:none">
-      <button class="action correct" onclick="judge(true)">
-        正解！
-      </button>
-
-      <button class="action wrong" onclick="judge(false)">
-        不正解
-      </button>
-    </div>
-
+    <div class="question" id="question">ここに問題文が表示されます</div>
     <button class="action close" onclick="closeModal()">
-      閉じる
+      閉じる（手元で非表示にする）
     </button>
-
   </div>
 </div>
 
 <script>
-
+// 司会者側と同じ問題データ（表示同期用）
 const questions = {
   trivia: [
-    {
-      point: 10,
-      q: "タコの足は何本？",
-      a: "8本"
-    },
-    {
-      point: 20,
-      q: "パンダの主食は何？",
-      a: "竹"
-    },
-    {
-      point: 30,
-      q: "世界で最も面積が大きい国は？",
-      a: "ロシア"
-    }
+    { point: 10, q: "タコの足は何本？" },
+    { point: 20, q: "パンダの主食は何？" },
+    { point: 30, q: "世界で最も面積が大きい国は？" }
   ],
-
   general: [
-    {
-      point: 10,
-      q: "日本の首都は？",
-      a: "東京"
-    },
-    {
-      point: 20,
-      q: "1年は何か月？",
-      a: "12か月"
-    },
-    {
-      point: 30,
-      q: "日本で一番高い山は？",
-      a: "富士山"
-    }
+    { point: 10, q: "日本の首都は？" },
+    { point: 20, q: "1年は何か月？" },
+    { point: 30, q: "日本で一番高い山は？" }
   ]
 };
 
-let score = 0;
-let currentQuestion = null;
-let currentTile = null;
-
+// ボードの初期描画（参加者はクリックしても反応しない）
 function createBoard() {
-
   for (const category in questions) {
-
     const board = document.getElementById(category);
-
-    questions[category].forEach((item, index) => {
-
-      const button = document.createElement("button");
-
-      button.className = "tile";
-      button.textContent = item.point + "点";
-
-      button.onclick = () => {
-        openQuestion(item, button);
-      };
-
-      board.appendChild(button);
-
+    questions[category].forEach((item) => {
+      const div = document.createElement("div");
+      div.className = "tile";
+      div.textContent = item.point + "点";
+      board.appendChild(div);
     });
   }
 }
 
-function openQuestion(item, tile) {
-
-  currentQuestion = item;
-  currentTile = tile;
-
-  document.getElementById("questionTitle").textContent =
-    item.point + " POINTS";
-
-  document.getElementById("question").textContent =
-    item.q;
-
-  document.getElementById("answer").textContent =
-    "正解：" + item.a;
-
-  document.getElementById("answer").style.display = "none";
-
-  document.getElementById("judge").style.display = "none";
-
-  document.getElementById("modal").style.display = "flex";
-}
-
-function showAnswer() {
-
-  document.getElementById("answer").style.display = "block";
-
-  document.getElementById("judge").style.display = "block";
-}
-
-function judge(isCorrect) {
-
-  if (isCorrect) {
-    score += currentQuestion.point;
-  }
-
-  document.getElementById("score").textContent = score;
-
-  currentTile.disabled = true;
-  currentTile.textContent = "使用済み";
-
-  closeModal();
-}
-
+// 参加者が手元でモーダルを閉じる関数（問題文を一時的に引っ込める用）
 function closeModal() {
-
   document.getElementById("modal").style.display = "none";
 }
 
-function resetGame() {
-
-  if (!confirm("ゲームを最初からやり直しますか？")) {
-    return;
-  }
-
-  score = 0;
-
-  document.getElementById("score").textContent = score;
-
-  document.getElementById("trivia").innerHTML = "";
-  document.getElementById("general").innerHTML = "";
-
-  createBoard();
-}
-
 createBoard();
-
 </script>
 
 </body>
