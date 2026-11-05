@@ -249,22 +249,17 @@ header p {
     </div>
 
     <div class="board-group">
-      <div class="section-title">■ 雑学</div>
+      <div class="section-title">雑学</div>
       <div class="board" id="trivia"></div>
     </div>
 
     <div class="board-group">
-      <div class="section-title">■ 一般常識</div>
+      <div class="section-title">一般常識</div>
       <div class="board" id="general"></div>
     </div>
 
-     <div class="board-group">
-      <div class="section-title">■ 文学</div>
-      <div class="board" id="general"></div>
-    </div>
-    
     <div class="reset-container">
-      <button class="reset" onclick="resetGame()">ゲームをリセット</button>
+      <button class="reset" onclick="resetGame()">RESET</button>
     </div>
   </div>
 </div>
@@ -298,7 +293,7 @@ header p {
 const questions = {
   trivia: [
     { point: 10, q: "タコの足は何本？", a: "8本" },
-    { point: 20, q: "語源はポルトガル語の「コンフェイト」で、戦国時代に日本へ伝わった、星のような形の砂糖菓子は何？", a: "金平糖" },
+    { point: 20, q: "パンダの主食は何？", a: "竹" },
     { point: 30, q: "世界で最も面積が大きい国は？", a: "ロシア" },
     { point: 40, q: "（4問目の問題）", a: "（答え）" },
     { point: 50, q: "（5問目の問題）", a: "（答え）" }
@@ -308,13 +303,6 @@ const questions = {
     { point: 20, q: "1年は何か月？", a: "12か月" },
     { point: 30, q: "日本で一番高い山は？", a: "富士山" },
     { point: 40, q: "（4問目の問題）", a: "（答え）" },
-    { point: 50, q: "（5問目の問題）", a: "（答え）" }
-  ]
-  literature: [
-    { point: 10, q: "日本の首都は？", a: "東京" },
-    { point: 20, q: "1年は何か月？", a: "12か月" },
-    { point: 30, q: "日本で一番高い山は？", a: "富士山" },
-    { point: 40, q: "57577で構成される和歌や短歌のことをその文字数からなんと呼ぶ？", a: "三十一文字（みそひともじ）" },
     { point: 50, q: "（5問目の問題）", a: "（答え）" }
   ]
 };
