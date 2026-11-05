@@ -140,18 +140,20 @@ header p {
   gap: 10px;
 }
 
-/* タイルデザイン */
+/* タイルデザイン（星5つ表示用に微調整） */
 .tile {
   background: #fff;
   color: #1a1a1a;
   border: 2px solid #1a1a1a;
   border-radius: 2px;
-  padding: 18px 5px;
-  font-size: 1.1rem;
+  padding: 14px 2px;
+  font-size: 0.85rem;
   font-weight: 700;
   cursor: pointer;
   transition: all 0.15s ease;
   text-align: center;
+  letter-spacing: -1px;
+  line-height: 1.2;
 }
 
 .tile:hover:not(:disabled) {
@@ -274,7 +276,7 @@ header p {
       <div><strong id="score">0</strong> <small style="font-size: 0.9rem; color:#aaa;">pts</small></div>
     </div>
 
-    <!-- ここにCONTENTSの大見出し（画像風の装飾）を配置 -->
+    <!-- CONTENTSの大見出し -->
     <div class="content-divider">
       <span class="content-badge">CONTENTS</span>
     </div>
@@ -289,7 +291,6 @@ header p {
       <div class="board" id="trivia"></div>
     </div>
 
-    <!-- ▼ ここに新しい枠を追加 -->
     <div class="board-group">
       <div class="section-title">（ 　文化・芸術　 ）</div>
       <div class="board" id="culture"></div>
@@ -352,7 +353,6 @@ const questions = {
     { point: 40, q: "（4問目の問題）", a: "（答え）" },
     { point: 50, q: "（5問目の問題）", a: "（答え）" }
   ],
-  // ▼ ここに新しいカテゴリを追加
   culture: [
     { point: 10, q: "タコの足は何本？", a: "8本" },
     { point: 20, q: "語源はポルトガル語の「コンフェイト」で、戦国時代に日本へ伝わった、星のような形の砂糖菓子は何？", a: "金平糖" },
@@ -380,13 +380,25 @@ let score = 0;
 let currentQuestion = null;
 let currentTile = null;
 
+// 配点(10~50pt)に応じて星(★/☆)を組み立てる関数
+function getStarRating(point) {
+  const level = Math.min(Math.max(Math.round(point / 10), 1), 5);
+  return "★".repeat(level) + "☆".repeat(5 - level);
+}
+
 function createBoard() {
   for (const category in questions) {
     const board = document.getElementById(category);
+    if (!board) continue;
+    board.innerHTML = "";
+
     questions[category].forEach((item) => {
       const button = document.createElement("button");
       button.className = "tile";
-      button.textContent = item.point + "pts";
+      
+      // ボタンのテキストに星5つを設定
+      button.textContent = getStarRating(item.point);
+      
       button.onclick = () => {
         openQuestion(item, button);
       };
@@ -432,8 +444,6 @@ function resetGame() {
   }
   score = 0;
   document.getElementById("score").textContent = score;
-  document.getElementById("trivia").innerHTML = "";
-  document.getElementById("general").innerHTML = "";
   createBoard();
 }
 
