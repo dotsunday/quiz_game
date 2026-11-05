@@ -280,8 +280,8 @@ header p {
     </div>
 
     <div class="board-group">
-      <div class="section-title">（ 　一般常識　 ）</div>
-      <div class="board" id="general"></div>
+      <div class="section-title">（ 　文学　 ）</div>
+      <div class="board" id="language"></div>
     </div>
 
     <div class="board-group">
@@ -291,7 +291,7 @@ header p {
 
     <!-- ▼ ここに新しい枠を追加 -->
     <div class="board-group">
-      <div class="section-title">（ 　カルチャー　 ）</div>
+      <div class="section-title">（ 　文化・芸術　 ）</div>
       <div class="board" id="culture"></div>
     </div>
 
@@ -338,7 +338,7 @@ header p {
 
 <script>
 const questions = {
-  general: [
+  language: [
     { point: 10, q: "タコの足は何本？", a: "8本" },
     { point: 20, q: "語源はポルトガル語の「コンフェイト」で、戦国時代に日本へ伝わった、星のような形の砂糖菓子は何？", a: "金平糖" },
     { point: 30, q: "世界で最も面積が大きい国は？", a: "ロシア" },
@@ -427,7 +427,7 @@ function closeModal() {
 }
 
 function resetGame() {
-  if (!confirm("ゲームを最初からやり直しますか？")) {
+  if (!confirm("最初からやりなおしますか？")) {
     return;
   }
   score = 0;
