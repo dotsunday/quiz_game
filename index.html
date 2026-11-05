@@ -1,1 +1,339 @@
-hello
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Panel Quiz Game</title>
+
+<style>
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 20px;
+  background: #101827;
+  color: white;
+  font-family: sans-serif;
+}
+
+header {
+  text-align: center;
+  padding: 20px;
+}
+
+h1 {
+  color: #62b5ff;
+  letter-spacing: 3px;
+}
+
+.score {
+  background: #202f45;
+  border-radius: 12px;
+  padding: 20px;
+  text-align: center;
+  margin-bottom: 25px;
+}
+
+.score strong {
+  display: block;
+  font-size: 36px;
+  color: #ffd166;
+}
+
+.board {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  margin-bottom: 25px;
+}
+
+.category {
+  text-align: center;
+  color: #62b5ff;
+  margin: 25px 0 12px;
+}
+
+.tile {
+  background: #245b91;
+  color: white;
+  border: none;
+  border-radius: 12px;
+  padding: 25px 5px;
+  font-size: 23px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.tile:disabled {
+  background: #394252;
+  color: #8993a2;
+  cursor: default;
+}
+
+.modal {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.85);
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+}
+
+.modal-content {
+  background: #202f45;
+  border: 1px solid #62b5ff;
+  border-radius: 18px;
+  padding: 25px;
+  width: 100%;
+  max-width: 450px;
+  text-align: center;
+}
+
+.question {
+  font-size: 21px;
+  margin: 25px 0;
+}
+
+.answer {
+  display: none;
+  color: #ffd166;
+  font-size: 20px;
+  margin: 20px 0;
+}
+
+button {
+  cursor: pointer;
+}
+
+.action {
+  border: none;
+  border-radius: 9px;
+  padding: 13px 18px;
+  margin: 5px;
+  font-size: 15px;
+}
+
+.reveal {
+  background: #397fc0;
+  color: white;
+}
+
+.correct {
+  background: #238b62;
+  color: white;
+}
+
+.wrong {
+  background: #bd4c55;
+  color: white;
+}
+
+.close {
+  background: #596579;
+  color: white;
+}
+
+.reset {
+  display: block;
+  margin: 30px auto;
+  background: #596579;
+  color: white;
+  border: none;
+  border-radius: 9px;
+  padding: 12px 20px;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <h1>PANEL QUIZ</h1>
+  <p>QUIZ GAME</p>
+</header>
+
+<div class="score">
+  CURRENT SCORE
+  <strong id="score">0</strong>
+  POINTS
+</div>
+
+<h2 class="category">📚 雑学</h2>
+<div class="board" id="trivia"></div>
+
+<h2 class="category">🌎 常識</h2>
+<div class="board" id="general"></div>
+
+<button class="reset" onclick="resetGame()">
+  ゲームをリセット
+</button>
+
+<div class="modal" id="modal">
+  <div class="modal-content">
+
+    <h2 id="questionTitle">QUESTION</h2>
+
+    <div class="question" id="question"></div>
+
+    <button class="action reveal" onclick="showAnswer()">
+      答えを見る
+    </button>
+
+    <div class="answer" id="answer"></div>
+
+    <div id="judge" style="display:none">
+      <button class="action correct" onclick="judge(true)">
+        正解！
+      </button>
+
+      <button class="action wrong" onclick="judge(false)">
+        不正解
+      </button>
+    </div>
+
+    <button class="action close" onclick="closeModal()">
+      閉じる
+    </button>
+
+  </div>
+</div>
+
+<script>
+
+const questions = {
+  trivia: [
+    {
+      point: 10,
+      q: "タコの足は何本？",
+      a: "8本"
+    },
+    {
+      point: 20,
+      q: "パンダの主食は何？",
+      a: "竹"
+    },
+    {
+      point: 30,
+      q: "世界で最も面積が大きい国は？",
+      a: "ロシア"
+    }
+  ],
+
+  general: [
+    {
+      point: 10,
+      q: "日本の首都は？",
+      a: "東京"
+    },
+    {
+      point: 20,
+      q: "1年は何か月？",
+      a: "12か月"
+    },
+    {
+      point: 30,
+      q: "日本で一番高い山は？",
+      a: "富士山"
+    }
+  ]
+};
+
+let score = 0;
+let currentQuestion = null;
+let currentTile = null;
+
+function createBoard() {
+
+  for (const category in questions) {
+
+    const board = document.getElementById(category);
+
+    questions[category].forEach((item, index) => {
+
+      const button = document.createElement("button");
+
+      button.className = "tile";
+      button.textContent = item.point + "点";
+
+      button.onclick = () => {
+        openQuestion(item, button);
+      };
+
+      board.appendChild(button);
+
+    });
+  }
+}
+
+function openQuestion(item, tile) {
+
+  currentQuestion = item;
+  currentTile = tile;
+
+  document.getElementById("questionTitle").textContent =
+    item.point + " POINTS";
+
+  document.getElementById("question").textContent =
+    item.q;
+
+  document.getElementById("answer").textContent =
+    "正解：" + item.a;
+
+  document.getElementById("answer").style.display = "none";
+
+  document.getElementById("judge").style.display = "none";
+
+  document.getElementById("modal").style.display = "flex";
+}
+
+function showAnswer() {
+
+  document.getElementById("answer").style.display = "block";
+
+  document.getElementById("judge").style.display = "block";
+}
+
+function judge(isCorrect) {
+
+  if (isCorrect) {
+    score += currentQuestion.point;
+  }
+
+  document.getElementById("score").textContent = score;
+
+  currentTile.disabled = true;
+  currentTile.textContent = "使用済み";
+
+  closeModal();
+}
+
+function closeModal() {
+
+  document.getElementById("modal").style.display = "none";
+}
+
+function resetGame() {
+
+  if (!confirm("ゲームを最初からやり直しますか？")) {
+    return;
+  }
+
+  score = 0;
+
+  document.getElementById("score").textContent = score;
+
+  document.getElementById("trivia").innerHTML = "";
+  document.getElementById("general").innerHTML = "";
+
+  createBoard();
+}
+
+createBoard();
+
+</script>
+
+</body>
+</html>
