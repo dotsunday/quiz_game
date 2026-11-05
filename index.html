@@ -326,7 +326,7 @@ function createBoard() {
     questions[category].forEach((item) => {
       const button = document.createElement("button");
       button.className = "tile";
-      button.textContent = item.point + "点";
+      button.textContent = item.point + "pts";
       button.onclick = () => {
         openQuestion(item, button);
       };
@@ -358,7 +358,7 @@ function judge(isCorrect) {
   }
   document.getElementById("score").textContent = score;
   currentTile.disabled = true;
-  currentTile.textContent = "使用済み";
+  currentTile.textContent = "USED";
   closeModal();
 }
 
