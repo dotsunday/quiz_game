@@ -11,7 +11,7 @@
 
 body {
   margin: 0;
-  padding: 40px 20px;
+  padding: 20px 10px;
   background-color: #009D4E;
   background-size: 60px 60px;
   background-image: 
@@ -37,7 +37,7 @@ header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 25px 30px;
+  padding: 20px;
   border-bottom: 2px solid #1a1a1a;
   background: #fff;
 }
@@ -49,69 +49,95 @@ h1 {
 }
 
 h1 img {
-  max-width: 180px;
+  max-width: 140px;
   height: auto;
   display: block;
 }
 
 header p {
   margin: 0;
-  font-size: 0.9rem;
-  letter-spacing: 0.1em;
+  font-size: 0.8rem;
+  letter-spacing: 0.05em;
   color: #1a1a1a;
   font-weight: 700;
 }
 
 /* コントロール全体レイアウト */
 .panel-body {
-  padding: 40px;
+  padding: 20px;
+}
+
+/* 添付画像のピル型＋両サイドライン装飾（CONTENTS用） */
+.content-divider {
+  display: flex;
+  align-items: center;
+  text-align: center;
+  margin: 25px 0 20px 0;
+}
+
+.content-divider::before,
+.content-divider::after {
+  content: "";
+  flex: 1;
+  border-bottom: 2px solid #1a1a1a;
+}
+
+.content-badge {
+  display: inline-block;
+  padding: 8px 24px;
+  border: 2px solid #1a1a1a;
+  border-radius: 50px;
+  background: #fff;
+  color: #1a1a1a;
+  font-size: 0.85rem;
+  font-weight: 800;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  margin: 0px;
+  box-shadow: 0 2px 0 #1a1a1a;
 }
 
 .section-title {
-  font-size: 0.9rem;
-  text-transform: uppercase;
-  letter-spacing: 0.15em;
-  border-bottom: 2px solid #1a1a1a;
-  padding-bottom: 8px;
-  margin-bottom: 20px;
+  font-size: 0.85rem;
   font-weight: 700;
   color: #1a1a1a;
+  margin-bottom: 10px;
 }
 
 /* スコア表示エリア */
 .score-box {
   background: #1a1a1a;
   color: #fff;
-  padding: 20px 30px;
+  padding: 15px 20px;
   border-radius: 2px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 40px;
+  margin-bottom: 20px;
 }
 
 .score-box span {
-  font-size: 0.85rem;
+  font-size: 0.8rem;
   letter-spacing: 0.1em;
   color: #aaa;
   text-transform: uppercase;
 }
 
 .score-box strong {
-  font-size: 2.5rem;
+  font-size: 2.2rem;
   color: #ffd166;
   font-family: monospace;
 }
 
 /* 問題ボードのグリッド */
 .board-group {
-  margin-bottom: 30px;
+  margin-bottom: 25px;
 }
 
 .board {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 12px;
+  gap: 10px;
 }
 
 /* タイルデザイン */
@@ -120,8 +146,8 @@ header p {
   color: #1a1a1a;
   border: 2px solid #1a1a1a;
   border-radius: 2px;
-  padding: 22px 10px;
-  font-size: 1.25rem;
+  padding: 18px 5px;
+  font-size: 1.1rem;
   font-weight: 700;
   cursor: pointer;
   transition: all 0.15s ease;
@@ -131,8 +157,6 @@ header p {
 .tile:hover:not(:disabled) {
   background: #1a1a1a;
   color: #fff;
-  transform: translateY(-2px);
-  box-shadow: 0 4px 0 #1a1a1a;
 }
 
 .tile:disabled {
@@ -150,7 +174,7 @@ header p {
   background: rgba(26,26,26,0.8);
   justify-content: center;
   align-items: center;
-  padding: 20px;
+  padding: 15px;
   backdrop-filter: blur(4px);
 }
 
@@ -158,25 +182,25 @@ header p {
   background: #fcfbf9;
   border: 2px solid #1a1a1a;
   border-radius: 4px;
-  padding: 40px;
+  padding: 25px;
   width: 100%;
-  max-width: 520px;
+  max-width: 480px;
   box-shadow: 0 15px 30px rgba(0,0,0,0.3);
 }
 
 .modal-content h2 {
   margin-top: 0;
-  font-size: 1.1rem;
+  font-size: 1rem;
   text-transform: uppercase;
   letter-spacing: 0.1em;
   color: #666;
   border-bottom: 1px solid #ddd;
-  padding-bottom: 10px;
+  padding-bottom: 8px;
 }
 
 .question {
-  font-size: 1.4rem;
-  margin: 30px 0;
+  font-size: 1.2rem;
+  margin: 20px 0;
   font-weight: 700;
   line-height: 1.4;
 }
@@ -185,45 +209,40 @@ header p {
   display: none;
   background: #fff;
   border-left: 4px solid #009D4E;
-  padding: 15px;
-  font-size: 1.2rem;
-  margin: 20px 0;
+  padding: 12px;
+  font-size: 1.1rem;
+  margin: 15px 0;
   font-weight: bold;
 }
 
 /* アクションボタン */
 .btn-row {
   display: flex;
-  gap: 10px;
-  margin-top: 20px;
+  gap: 8px;
+  margin-top: 15px;
 }
 
 .action {
   flex: 1;
   border: 2px solid #1a1a1a;
   border-radius: 2px;
-  padding: 14px 10px;
-  font-size: 0.95rem;
+  padding: 12px 8px;
+  font-size: 0.9rem;
   font-weight: 700;
   cursor: pointer;
-  transition: 0.1s;
   text-transform: uppercase;
-}
-
-.action:hover {
-  opacity: 0.85;
 }
 
 .reveal { background: #fff; color: #1a1a1a; }
 .correct { background: #009D4E; color: #fff; }
 .wrong { background: #d90429; color: #fff; }
-.close-btn { background: #1a1a1a; color: #fff; width: 100%; margin-top: 15px; }
+.close-btn { background: #1a1a1a; color: #fff; width: 100%; margin-top: 12px; }
 
 .reset-container {
   text-align: center;
-  margin-top: 40px;
+  margin-top: 30px;
   border-top: 1px solid #ddd;
-  padding-top: 25px;
+  padding-top: 20px;
 }
 
 .reset {
@@ -231,16 +250,10 @@ header p {
   color: #666;
   border: 2px solid #ccc;
   border-radius: 2px;
-  padding: 10px 20px;
-  font-size: 0.85rem;
+  padding: 8px 16px;
+  font-size: 0.8rem;
   font-weight: 600;
   cursor: pointer;
-  transition: 0.15s;
-}
-
-.reset:hover {
-  border-color: #1a1a1a;
-  color: #1a1a1a;
 }
 </style>
 </head>
@@ -257,17 +270,22 @@ header p {
 
   <div class="panel-body">
     <div class="score-box">
-      <span>Current Score</span>
-      <div><strong id="score">0</strong> <small style="font-size: 1rem; color:#aaa;">PTS</small></div>
+      <span>SCORE</span>
+      <div><strong id="score">0</strong> <small style="font-size: 0.9rem; color:#aaa;">PTS</small></div>
+    </div>
+
+    <!-- ここにCONTENTSの大見出し（画像風の装飾）を配置 -->
+    <div class="content-divider">
+      <span class="content-badge">CONTENTS</span>
     </div>
 
     <div class="board-group">
-      <div class="section-title">雑学 / Trivia</div>
+      <div class="section-title">（ 雑学 ）</div>
       <div class="board" id="trivia"></div>
     </div>
 
     <div class="board-group">
-      <div class="section-title">常識 / General Knowledge</div>
+      <div class="section-title">（ 一般常識 ）</div>
       <div class="board" id="general"></div>
     </div>
 
@@ -284,7 +302,7 @@ header p {
     <div class="question" id="question"></div>
 
     <button class="action reveal" onclick="showAnswer()" style="width:100%;">
-      答えを見る
+      答え
     </button>
 
     <div class="answer" id="answer"></div>
@@ -306,13 +324,17 @@ header p {
 const questions = {
   trivia: [
     { point: 10, q: "タコの足は何本？", a: "8本" },
-    { point: 20, q: "パンダの主食は何？", a: "竹" },
-    { point: 30, q: "世界で最も面積が大きい国は？", a: "ロシア" }
+    { point: 20, q: "語源はポルトガル語の「コンフェイト」で、戦国時代に日本へ伝わった、星のような形の砂糖菓子は何？", a: "金平糖" },
+    { point: 30, q: "世界で最も面積が大きい国は？", a: "ロシア" },
+    { point: 40, q: "（4問目の問題）", a: "（答え）" },
+    { point: 50, q: "（5問目の問題）", a: "（答え）" }
   ],
   general: [
     { point: 10, q: "日本の首都は？", a: "東京" },
     { point: 20, q: "1年は何か月？", a: "12か月" },
-    { point: 30, q: "日本で一番高い山は？", a: "富士山" }
+    { point: 30, q: "日本で一番高い山は？", a: "富士山" },
+    { point: 40, q: "（4問目の問題）", a: "（答え）" },
+    { point: 50, q: "（5問目の問題）", a: "（答え）" }
   ]
 };
 
