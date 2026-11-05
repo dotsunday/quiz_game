@@ -110,8 +110,8 @@ header p {
 
 .board {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 12px;
+  grid-template-columns: repeat(5, 1fr); /* 5列に変更 */
+  gap: 10px;
 }
 
 /* タイルデザイン */
@@ -307,12 +307,16 @@ const questions = {
   trivia: [
     { point: 10, q: "タコの足は何本？", a: "8本" },
     { point: 20, q: "パンダの主食は何？", a: "竹" },
-    { point: 30, q: "世界で最も面積が大きい国は？", a: "ロシア" }
+    { point: 30, q: "世界で最も面積が大きい国は？", a: "ロシア" },
+    { point: 40, q: "（ここに40点の問題）", a: "（答え）" },
+    { point: 50, q: "（ここに50点の問題）", a: "（答え）" }
   ],
   general: [
     { point: 10, q: "日本の首都は？", a: "東京" },
     { point: 20, q: "1年は何か月？", a: "12か月" },
-    { point: 30, q: "日本で一番高い山は？", a: "富士山" }
+    { point: 30, q: "日本で一番高い山は？", a: "富士山" },
+    { point: 40, q: "（ここに40点の問題）", a: "（答え）" },
+    { point: 50, q: "（ここに50点の問題）", a: "（答え）" }
   ]
 };
 
