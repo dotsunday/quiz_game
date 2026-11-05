@@ -33,25 +33,24 @@ body {
 }
 
 header {
-  padding: 30px 40px 20px;
+  text-align: center;
+  padding: 35px 20px 25px;
   border-bottom: 2px solid #1a1a1a;
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-end;
   background: #fff;
 }
 
 h1 {
-  margin: 0;
-  font-size: 2.2rem;
-  letter-spacing: -0.05em;
-  font-weight: 900;
+  margin: 0 0 8px 0;
+}
+
+h1 img {
+  max-width: 220px; /* 必要に応じてロゴの大きさを調整してください */
+  height: auto;
 }
 
 header p {
   margin: 0;
-  font-size: 0.85rem;
-  text-transform: uppercase;
+  font-size: 0.9rem;
   letter-spacing: 0.1em;
   color: #666;
   font-weight: 600;
@@ -73,7 +72,7 @@ header p {
   color: #1a1a1a;
 }
 
-/* スコア表示エリア（インダストリアルなボックス） */
+/* スコア表示エリア */
 .score-box {
   background: #1a1a1a;
   color: #fff;
@@ -109,7 +108,7 @@ header p {
   gap: 12px;
 }
 
-/* タイルデザイン：あえてソリッドで少し無機質な、でも洗練された長方形 */
+/* タイルデザイン：ソリッドで洗練された長方形 */
 .tile {
   background: #fff;
   color: #1a1a1a;
@@ -137,7 +136,7 @@ header p {
   cursor: default;
 }
 
-/* モーダル（誌面レイアウト風） */
+/* モーダル */
 .modal {
   display: none;
   position: fixed;
@@ -186,7 +185,7 @@ header p {
   font-weight: bold;
 }
 
-/* アクションボタン（ポスターや雑誌のタグのようなフラットで強いボタン） */
+/* アクションボタン */
 .btn-row {
   display: flex;
   gap: 10px;
@@ -244,8 +243,10 @@ header p {
 
 <div class="container">
   <header>
-    <h1>KNOW.</h1>
-    <p>Host Control Panel</p>
+    <h1>
+      <img src="titlelogo_white.png" alt="KNOW.">
+    </h1>
+    <p>I KNOW. DO YOU?</p>
   </header>
 
   <div class="panel-body">
@@ -255,12 +256,12 @@ header p {
     </div>
 
     <div class="board-group">
-      <div class="section-title">📚 雑学 / Trivia</div>
+      <div class="section-title">📚 雑学</div>
       <div class="board" id="trivia"></div>
     </div>
 
     <div class="board-group">
-      <div class="section-title">🌎 常識 / General Knowledge</div>
+      <div class="section-title">🌎 常識</div>
       <div class="board" id="general"></div>
     </div>
 
@@ -319,11 +320,11 @@ function createBoard() {
     questions[category].forEach((item) => {
       const button = document.createElement("button");
       button.className = "tile";
-      button.textContent = item.point + " pts";
+      button.textContent = item.point + "点";
       button.onclick = () => {
         openQuestion(item, button);
       };
-      board.expend ? null : board.appendChild(button);
+      board.appendChild(button);
     });
   }
 }
@@ -332,7 +333,7 @@ function openQuestion(item, tile) {
   currentQuestion = item;
   currentTile = tile;
 
-  document.getElementById("questionTitle").textContent = "QUESTION — " + item.point + " PTS";
+  document.getElementById("questionTitle").textContent = item.point + " POINTS";
   document.getElementById("question").textContent = item.q;
   document.getElementById("answer").textContent = "正解：" + item.a;
   document.getElementById("answer").style.display = "none";
@@ -351,7 +352,7 @@ function judge(isCorrect) {
   }
   document.getElementById("score").textContent = score;
   currentTile.disabled = true;
-  currentTile.textContent = "USED";
+  currentTile.textContent = "使用済み";
   closeModal();
 }
 
