@@ -289,6 +289,12 @@ header p {
       <div class="board" id="general"></div>
     </div>
 
+    <!-- ▼ ここに新しい枠を追加 -->
+    <div class="board-group">
+      <div class="section-title">（ カルチャー ）</div>
+      <div class="board" id="culture"></div>
+    </div>
+    
     <div class="reset-container">
       <button class="reset" onclick="resetGame()">RESET</button>
     </div>
@@ -336,6 +342,13 @@ const questions = {
     { point: 40, q: "（4問目の問題）", a: "（答え）" },
     { point: 50, q: "（5問目の問題）", a: "（答え）" }
   ]
+  culture: [
+    { point: 10, q: "タコの足は何本？", a: "8本" },
+    { point: 20, q: "語源はポルトガル語の「コンフェイト」で、戦国時代に日本へ伝わった、星のような形の砂糖菓子は何？", a: "金平糖" },
+    { point: 30, q: "57577で構成される和歌や短歌のことをその文字数からなんと呼ぶ？", a: "三十一文字(みそひともじ)" },
+    { point: 40, q: "（4問目の問題）", a: "（答え）" },
+    { point: 50, q: "（5問目の問題）", a: "（答え）" }
+  ],
 };
 
 let score = 0;
