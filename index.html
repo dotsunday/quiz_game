@@ -740,7 +740,10 @@ async function openQuestion(item, tile) {
   document.getElementById("modal").style.display = "flex";
 
   // ルームが作成されていなければ保存しない
-  if (!currentRoomId) return;
+ if (!currentRoomId) {
+  alert("ルームIDが取得できていません！");
+  return;
+}
 
   // 問題情報をSupabaseに保存
   const { error } = await supabaseClient
