@@ -423,6 +423,15 @@ header p {
     ルームを作成
   </button>
 
+<button
+  class="room-button"
+  id="closeRoomButton"
+  onclick="closeRoom()"
+  style="display: none;"
+>
+  ルームを閉じる
+</button>
+
   <div class="room-info" id="roomInfo">
     まだルームは作成されていません
   </div>
@@ -469,7 +478,10 @@ header p {
   <div class="modal-content">
     <h2 id="questionTitle">QUESTION</h2>
     <div class="question" id="question"></div>
-
+<!-- 早押し順の表示 -->
+<div id="buzzList" style="margin: 20px 0;">
+  <p>早押し受付を待っています</p>
+</div>
     <button class="action reveal" onclick="showAnswer()" style="width:100%;">
       答え
     </button>
@@ -527,9 +539,135 @@ const supabaseReady = connectSupabase();
 // 現在のルーム情報
 let currentRoomId = null;
 let currentRoomKey = null;
+// 保存されたルーム情報を復元
+async function restoreHostRoom() {
+  const savedRoomId = localStorage.getItem("know_host_room_id");
+  const savedRoomCode = localStorage.getItem("know_host_room_code");
+
+  // 保存情報がなければ何もしない
+  if (!savedRoomId || !savedRoomCode) {
+    return;
+  }
+
+  try {
+    await supabaseReady;
+
+    // ログイン状態を確認
+    const { data: sessionData, error: sessionError } =
+      await supabaseClient.auth.getSession();
+
+    if (sessionError) throw sessionError;
+
+    if (!sessionData.session) {
+      console.log("司会者のログイン情報がありません");
+      return;
+    }
+
+    // 自分が作ったルームか確認
+    const { data: room, error } = await supabaseClient
+      .from("rooms")
+      .select("id, room_code")
+      .eq("id", savedRoomId)
+      .single();
+
+    if (error) throw error;
+
+    if (!room || room.room_code !== savedRoomCode) {
+      throw new Error("保存されたルーム情報と一致しません");
+    }
+
+    // ルーム情報を復元
+    currentRoomId = room.id;
+    currentRoomKey = room.room_code;
+
+    // 参加コードを画面に表示
+    document.getElementById("roomInfo").textContent =
+      "参加コード：" + currentRoomKey;
+
+    const button = document.getElementById("createRoomButton");
+    button.textContent = "ルーム作成済み";
+    button.disabled = true;
+
+document.getElementById("closeRoomButton").style.display = "block";
+
+    // スコアボードを再開
+    startScoreboard();
+
+    console.log("司会者のルーム復元に成功しました！");
+
+  } catch (error) {
+    console.error("司会者のルーム復元エラー:", error);
+  }
+}
 
 // ランキング更新用
 let rankingChannel = null;
+let buzzChannel = null;
+
+// ルームを閉じる
+async function closeRoom() {
+  if (!currentRoomId) return;
+
+  if (!confirm("ルームを閉じますか？参加者もゲームに参加できなくなります。")) {
+    return;
+  }
+
+  const button = document.getElementById("closeRoomButton");
+  button.disabled = true;
+  button.textContent = "終了処理中...";
+
+  try {
+    await supabaseReady;
+
+    const { error } = await supabaseClient.rpc("host_close_room", {
+      p_room_id: currentRoomId
+    });
+
+    if (error) throw error;
+
+    // リアルタイム監視を終了
+    if (rankingChannel) {
+      await supabaseClient.removeChannel(rankingChannel);
+      rankingChannel = null;
+    }
+
+    if (buzzChannel) {
+      await supabaseClient.removeChannel(buzzChannel);
+      buzzChannel = null;
+    }
+
+    // 保存していたルーム情報を削除
+    localStorage.removeItem("know_host_room_id");
+    localStorage.removeItem("know_host_room_code");
+
+    // 司会者側のルーム情報をリセット
+    currentRoomId = null;
+    currentRoomKey = null;
+
+    document.getElementById("roomInfo").textContent =
+      "まだルームは作成されていません";
+
+    document.getElementById("createRoomButton").textContent =
+      "ルームを作成";
+    document.getElementById("createRoomButton").disabled = false;
+
+    button.style.display = "none";
+    button.disabled = false;
+    button.textContent = "ルームを閉じる";
+
+    document.getElementById("rankingList").innerHTML =
+      '<div class="ranking-empty">参加者の入室を待っています</div>';
+
+    alert("ルームを閉じました！");
+
+  } catch (error) {
+    console.error("ルーム終了エラー:", error);
+    alert("ルームを閉じられませんでした：" + error.message);
+
+    button.disabled = false;
+    button.textContent = "ルームを閉じる";
+  }
+}
 
 // 参加者のランキングを取得
 async function loadPlayers() {
@@ -588,7 +726,65 @@ async function loadPlayers() {
   });
 }
 
-// 参加者の入室・得点変更を監視
+// 早押しした参加者の一覧を取得
+async function loadBuzzList() {
+  if (!currentRoomId) return;
+
+  const buzzList = document.getElementById("buzzList");
+
+  const { data: room, error: roomError } = await supabaseClient
+    .from("rooms")
+    .select("current_question_number")
+    .eq("id", currentRoomId)
+    .single();
+
+  if (roomError) {
+    console.error("ルーム情報取得エラー:", roomError);
+    return;
+  }
+
+  const { data, error } = await supabaseClient
+    .from("answers")
+    .select("player_id, buzz_order")
+    .eq("room_id", currentRoomId)
+    .eq("question_number", room.current_question_number)
+    .order("buzz_order", { ascending: true });
+
+  if (error) {
+    console.error("早押し取得エラー:", error);
+    return;
+  }
+
+  const { data: players, error: playerError } = await supabaseClient
+    .from("players")
+    .select("id, nickname")
+    .eq("room_id", currentRoomId);
+
+  if (playerError) {
+    console.error("参加者取得エラー:", playerError);
+    return;
+  }
+
+  buzzList.innerHTML = "";
+
+  if (!data || data.length === 0) {
+    buzzList.textContent = "早押し受付を待っています";
+    return;
+  }
+
+  data.forEach((answer) => {
+    const player = players.find(p => p.id === answer.player_id);
+    if (!player) return;
+
+    const row = document.createElement("div");
+    row.textContent =
+      answer.buzz_order + "番目：" + player.nickname;
+
+    buzzList.appendChild(row);
+  });
+}
+
+// 参加者の入室・得点変更・早押しを監視
 function startScoreboard() {
   if (!currentRoomId) return;
 
@@ -596,7 +792,12 @@ function startScoreboard() {
     supabaseClient.removeChannel(rankingChannel);
   }
 
+  if (buzzChannel) {
+    supabaseClient.removeChannel(buzzChannel);
+  }
+
   loadPlayers();
+  loadBuzzList();
 
   rankingChannel = supabaseClient
     .channel("ranking-" + currentRoomId)
@@ -613,8 +814,23 @@ function startScoreboard() {
       }
     )
     .subscribe();
-}
 
+  buzzChannel = supabaseClient
+    .channel("buzz-" + currentRoomId)
+    .on(
+      "postgres_changes",
+      {
+        event: "INSERT",
+        schema: "public",
+        table: "answers",
+        filter: "room_id=eq." + currentRoomId
+      },
+      () => {
+        loadBuzzList();
+      }
+    )
+    .subscribe();
+}
 
 // ルーム作成
 async function createRoom() {
@@ -648,12 +864,16 @@ async function createRoom() {
 
     currentRoomId = room.created_room_id;
     currentRoomKey = room.created_room_code;
-
+// 司会者のルーム情報を保存
+localStorage.setItem("know_host_room_id", currentRoomId);
+localStorage.setItem("know_host_room_code", currentRoomKey);
     startScoreboard();
 
     // 6桁の参加コードを表示
     info.textContent = "参加コード：" + currentRoomKey;
     button.textContent = "ルーム作成済み";
+
+document.getElementById("closeRoomButton").style.display = "block";
 
     console.log("ルーム作成成功！", room);
 
@@ -740,21 +960,36 @@ async function openQuestion(item, tile) {
   document.getElementById("modal").style.display = "flex";
 
   // ルームが作成されていなければ保存しない
-  if (!currentRoomId) return;
+ if (!currentRoomId) {
+  alert("ルームIDが取得できていません！");
+  return;
+}
 
-  // 問題情報をSupabaseに保存
-  const { error } = await supabaseClient
-    .from("rooms")
-    .update({
-      current_question_text: item.q,
-      current_question_category: Object.keys(questions).find(
-        category => questions[category].includes(item)
-      ),
-      current_points: item.point,
-      question_status: "waiting",
-      buzz_open: false
-    })
-    .eq("id", currentRoomId);
+// 問題情報をSupabaseに保存
+const { data, error } = await supabaseClient
+  .from("rooms")
+  .update({
+    current_question_text: item.q,
+    current_question_category: Object.keys(questions).find(
+      category => questions[category].includes(item)
+    ),
+    current_points: item.point,
+    question_status: "waiting",
+    buzz_open: false
+  })
+  .eq("id", currentRoomId)
+  .select();
+
+console.log("保存結果:", data);
+console.log("保存エラー:", error);
+
+if (error) {
+  alert("保存エラー：" + error.message);
+} else if (!data || data.length === 0) {
+  alert("保存できていません。更新対象のルームが見つからないか、更新権限がありません。");
+} else {
+  console.log("問題情報の保存に成功しました！");
+}
 
   if (error) {
     console.error("問題情報の保存エラー:", error);
@@ -791,6 +1026,7 @@ function resetGame() {
 }
 
 createBoard();
+restoreHostRoom();
 </script>
 
 </body>
