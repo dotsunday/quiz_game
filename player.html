@@ -377,6 +377,92 @@ const supabaseClient = window.supabase.createClient(
   SUPABASE_KEY
 );
 
+// 現在参加しているルーム
+let playerRoomId = null;
+
+// ルームの更新を監視するチャンネル
+let playerRoomChannel = null;
+
+// ジャンル名を日本語に変換
+const categoryNames = {
+  language: "文学",
+  trivia: "雑学",
+  culture: "文化・芸術",
+  anime: "アニメ",
+  net: "ネットスラング"
+};
+
+// 参加中のルーム情報を取得
+async function watchRoom(roomCode) {
+  const { data: room, error } = await supabaseClient
+    .from("rooms")
+    .select("id, current_question_text, current_question_category, current_points, question_status, buzz_open")
+    .eq("room_key", roomCode)
+    .single();
+
+  if (error) {
+    console.error("ルーム情報取得エラー:", error);
+    alert("ルーム情報を取得できませんでした。");
+    return;
+  }
+
+  playerRoomId = room.id;
+
+  // 現在の問題を画面に表示
+  updateQuestionScreen(room);
+
+  // 以前の監視があれば終了
+  if (playerRoomChannel) {
+    await supabaseClient.removeChannel(playerRoomChannel);
+  }
+
+  // ルーム情報の変更をリアルタイムで監視
+  playerRoomChannel = supabaseClient
+    .channel("player-room-" + playerRoomId)
+    .on(
+      "postgres_changes",
+      {
+        event: "UPDATE",
+        schema: "public",
+        table: "rooms",
+        filter: "id=eq." + playerRoomId
+      },
+      (payload) => {
+        updateQuestionScreen(payload.new);
+      }
+    )
+    .subscribe();
+}
+
+// 問題画面を書き換える
+function updateQuestionScreen(room) {
+  const questionText = document.getElementById("questionText");
+  const questionCategory = document.getElementById("questionCategory");
+  const waitingMessage = document.getElementById("waitingMessage");
+  const answerArea = document.getElementById("answerArea");
+  const buzzerButton = document.getElementById("buzzerButton");
+
+  if (!room.current_question_text) {
+    questionCategory.textContent = "WAITING FOR QUESTION";
+    questionText.textContent = "司会者が問題を選ぶのを待っています。";
+    waitingMessage.style.display = "block";
+    answerArea.style.display = "none";
+    return;
+  }
+
+  const category =
+    categoryNames[room.current_question_category] || "QUESTION";
+
+  questionCategory.textContent =
+    category + " / " + room.current_points + " POINTS";
+
+  questionText.textContent = room.current_question_text;
+
+  waitingMessage.style.display = "block";
+  answerArea.style.display = "none";
+  buzzerButton.disabled = true;
+}
+
 // 入室処理
 async function joinGame() {
   const playerName = document.getElementById("playerName").value.trim();
@@ -425,6 +511,7 @@ async function joinGame() {
     document.getElementById("displayName").textContent = playerName;
     document.getElementById("joinScreen").style.display = "none";
     document.getElementById("gameScreen").style.display = "block";
+watchRoom(roomCode);
 
     console.log("入室成功！", data);
 
