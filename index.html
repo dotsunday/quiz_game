@@ -102,6 +102,7 @@ header p {
   font-weight: 700;
   color: #1a1a1a;
   margin-bottom: 10px;
+  letter-spacing: 0.2em;
 }
 
 /* スコア表示エリア */
@@ -198,8 +199,16 @@ header p {
 }
 
 /* 問題ボードのグリッド */
+/* ジャンルごとの問題ボード */
 .board-group {
   margin-bottom: 25px;
+  padding-bottom: 25px;
+  border-bottom: 2px dashed #999;
+}
+
+/* 最後のジャンルには区切り線をつけない */
+.board-group:last-child {
+  border-bottom: none;
 }
 
 .board {
@@ -213,7 +222,7 @@ header p {
   background: #fff;
   color: #1a1a1a;
   border: 2px solid #1a1a1a;
-  border-radius: 2px;
+  border-radius: 50px;
   padding: 16px 5px;
   font-size: 1.2rem;
   font-weight: 800;
