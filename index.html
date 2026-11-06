@@ -469,7 +469,10 @@ header p {
   <div class="modal-content">
     <h2 id="questionTitle">QUESTION</h2>
     <div class="question" id="question"></div>
-
+<!-- 早押し順の表示 -->
+<div id="buzzList" style="margin: 20px 0;">
+  <p>早押し受付を待っています</p>
+</div>
     <button class="action reveal" onclick="showAnswer()" style="width:100%;">
       答え
     </button>
@@ -588,6 +591,7 @@ async function restoreHostRoom() {
 
 // ランキング更新用
 let rankingChannel = null;
+let buzzChannel = null;
 
 // 参加者のランキングを取得
 async function loadPlayers() {
@@ -646,7 +650,65 @@ async function loadPlayers() {
   });
 }
 
-// 参加者の入室・得点変更を監視
+// 早押しした参加者の一覧を取得
+async function loadBuzzList() {
+  if (!currentRoomId) return;
+
+  const buzzList = document.getElementById("buzzList");
+
+  const { data: room, error: roomError } = await supabaseClient
+    .from("rooms")
+    .select("current_question_number")
+    .eq("id", currentRoomId)
+    .single();
+
+  if (roomError) {
+    console.error("ルーム情報取得エラー:", roomError);
+    return;
+  }
+
+  const { data, error } = await supabaseClient
+    .from("answers")
+    .select("player_id, buzz_order")
+    .eq("room_id", currentRoomId)
+    .eq("question_number", room.current_question_number)
+    .order("buzz_order", { ascending: true });
+
+  if (error) {
+    console.error("早押し取得エラー:", error);
+    return;
+  }
+
+  const { data: players, error: playerError } = await supabaseClient
+    .from("players")
+    .select("id, nickname")
+    .eq("room_id", currentRoomId);
+
+  if (playerError) {
+    console.error("参加者取得エラー:", playerError);
+    return;
+  }
+
+  buzzList.innerHTML = "";
+
+  if (!data || data.length === 0) {
+    buzzList.textContent = "早押し受付を待っています";
+    return;
+  }
+
+  data.forEach((answer) => {
+    const player = players.find(p => p.id === answer.player_id);
+    if (!player) return;
+
+    const row = document.createElement("div");
+    row.textContent =
+      answer.buzz_order + "番目：" + player.nickname;
+
+    buzzList.appendChild(row);
+  });
+}
+
+// 参加者の入室・得点変更・早押しを監視
 function startScoreboard() {
   if (!currentRoomId) return;
 
@@ -654,7 +716,12 @@ function startScoreboard() {
     supabaseClient.removeChannel(rankingChannel);
   }
 
+  if (buzzChannel) {
+    supabaseClient.removeChannel(buzzChannel);
+  }
+
   loadPlayers();
+  loadBuzzList();
 
   rankingChannel = supabaseClient
     .channel("ranking-" + currentRoomId)
@@ -671,8 +738,23 @@ function startScoreboard() {
       }
     )
     .subscribe();
-}
 
+  buzzChannel = supabaseClient
+    .channel("buzz-" + currentRoomId)
+    .on(
+      "postgres_changes",
+      {
+        event: "INSERT",
+        schema: "public",
+        table: "answers",
+        filter: "room_id=eq." + currentRoomId
+      },
+      () => {
+        loadBuzzList();
+      }
+    )
+    .subscribe();
+}
 
 // ルーム作成
 async function createRoom() {
