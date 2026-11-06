@@ -101,7 +101,6 @@ header p {
   font-size: 0.85rem;
   font-weight: 700;
   color: #1a1a1a;
-  margin-body: 10px;
   margin-bottom: 10px;
 }
 
@@ -150,7 +149,7 @@ header p {
   padding: 16px 5px;
   font-size: 1.2rem;
   font-weight: 800;
-  font-family: monospace; /* 数字が綺麗に見えるフォントに */
+  font-family: monospace;
   cursor: pointer;
   transition: all 0.15s ease;
   text-align: center;
@@ -166,7 +165,7 @@ header p {
   color: #888;
   border-color: #ccc;
   cursor: default;
-  font-family: inherit; /* USEDになったら通常の文字に戻す */
+  font-family: inherit;
   font-size: 1.1rem;
 }
 
@@ -284,27 +283,27 @@ header p {
     </div>
 
     <div class="board-group">
-      <div class="section-title">（ 　文学　 ）</div>
+      <div class="section-title">（  文学  ）</div>
       <div class="board" id="language"></div>
     </div>
 
     <div class="board-group">
-      <div class="section-title">（ 　雑学　 ）</div>
+      <div class="section-title">（  雑学  ）</div>
       <div class="board" id="trivia"></div>
     </div>
 
     <div class="board-group">
-      <div class="section-title">（ 　文化・芸術　 ）</div>
+      <div class="section-title">（  文化・芸術  ）</div>
       <div class="board" id="culture"></div>
     </div>
 
-     <div class="board-group">
-      <div class="section-title">（ 　アニメ　 ）</div>
+    <div class="board-group">
+      <div class="section-title">（  アニメ  ）</div>
       <div class="board" id="anime"></div>
     </div>
 
     <div class="board-group">
-      <div class="section-title">（ 　ネットスラング　 ）</div>
+      <div class="section-title">（  ネットスラング  ）</div>
       <div class="board" id="net"></div>
     </div>
     
@@ -392,7 +391,6 @@ function createBoard() {
       const button = document.createElement("button");
       button.className = "tile";
       
-      // ptsをつけず、数字（例: 10, 20...）だけをそのまま表示
       button.textContent = item.point;
       
       button.onclick = () => {
