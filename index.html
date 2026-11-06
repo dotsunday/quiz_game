@@ -745,19 +745,31 @@ async function openQuestion(item, tile) {
   return;
 }
 
-  // 問題情報をSupabaseに保存
-  const { error } = await supabaseClient
-    .from("rooms")
-    .update({
-      current_question_text: item.q,
-      current_question_category: Object.keys(questions).find(
-        category => questions[category].includes(item)
-      ),
-      current_points: item.point,
-      question_status: "waiting",
-      buzz_open: false
-    })
-    .eq("id", currentRoomId);
+// 問題情報をSupabaseに保存
+const { data, error } = await supabaseClient
+  .from("rooms")
+  .update({
+    current_question_text: item.q,
+    current_question_category: Object.keys(questions).find(
+      category => questions[category].includes(item)
+    ),
+    current_points: item.point,
+    question_status: "waiting",
+    buzz_open: false
+  })
+  .eq("id", currentRoomId)
+  .select();
+
+console.log("保存結果:", data);
+console.log("保存エラー:", error);
+
+if (error) {
+  alert("保存エラー：" + error.message);
+} else if (!data || data.length === 0) {
+  alert("保存できていません。更新対象のルームが見つからないか、更新権限がありません。");
+} else {
+  console.log("問題情報の保存に成功しました！");
+}
 
   if (error) {
     console.error("問題情報の保存エラー:", error);
