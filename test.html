@@ -727,7 +727,7 @@ function createBoard() {
   }
 }
 
-function openQuestion(item, tile) {
+async function openQuestion(item, tile) {
   currentQuestion = item;
   currentTile = tile;
 
@@ -737,6 +737,28 @@ function openQuestion(item, tile) {
   document.getElementById("answer").style.display = "none";
   document.getElementById("judge").style.display = "none";
   document.getElementById("modal").style.display = "flex";
+
+  // ルームが作成されていなければ保存しない
+  if (!currentRoomId) return;
+
+  // 問題情報をSupabaseに保存
+  const { error } = await supabaseClient
+    .from("rooms")
+    .update({
+      current_question_text: item.q,
+      current_question_category: Object.keys(questions).find(
+        category => questions[category].includes(item)
+      ),
+      current_points: item.point,
+      question_status: "waiting",
+      buzz_open: false
+    })
+    .eq("id", currentRoomId);
+
+  if (error) {
+    console.error("問題情報の保存エラー:", error);
+    alert("問題情報を保存できませんでした。");
+  }
 }
 
 function showAnswer() {
