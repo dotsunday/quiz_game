@@ -345,8 +345,8 @@ footer {
       </div>
 
       <p class="note">
-        ※ 現在は画面確認用です。<br>
-        司会者との連動機能はこれから追加します。
+        ※ 現在は画面確認用です<br>
+        司会者との連動機能はこれから追加します
       </p>
 
     </section>
@@ -396,7 +396,7 @@ async function watchRoom(roomCode) {
 
   if (error) {
     console.error("ルーム情報取得エラー:", error);
-    alert("ルーム情報を取得できませんでした。");
+    alert("ルーム情報を取得できませんでした");
     return;
   }
 
@@ -428,5 +428,99 @@ async function watchRoom(roomCode) {
     .subscribe();
 }
 
+// 問題画面を更新
+function updateQuestionScreen(room) {
+  const questionText = document.getElementById("questionText");
+  const questionCategory = document.getElementById("questionCategory");
+  const waitingMessage = document.getElementById("waitingMessage");
+  const answerArea = document.getElementById("answerArea");
+  const buzzerButton = document.getElementById("buzzerButton");
+
+  if (!room.current_question_text) {
+    questionCategory.textContent = "WAITING FOR QUESTION";
+    questionText.textContent = "ホストが問題を選ぶのを待っています";
+    waitingMessage.style.display = "block";
+    answerArea.style.display = "none";
+    return;
+  }
+
+  const category =
+    categoryNames[room.current_question_category] || "QUESTION";
+
+  questionCategory.textContent =
+    category + " / " + room.current_points + " POINTS";
+
+  questionText.textContent = room.current_question_text;
+
+  waitingMessage.style.display = "block";
+  answerArea.style.display = "none";
+  buzzerButton.disabled = true;
+}
+
+// 入室処理
+async function joinGame() {
+  const playerName = document.getElementById("playerName").value.trim();
+  const roomCode = document.getElementById("roomCode").value.trim();
+
+  if (!/^\d{6}$/.test(roomCode)) {
+    alert("数字6桁で入力してください");
+    return;
+  }
+
+  if (!playerName) {
+    alert("ニックネームを入力してください");
+    return;
+  }
+
+  const button = document.querySelector(".main-button");
+  button.disabled = true;
+  button.textContent = "JOINING...";
+
+  try {
+    const { data: sessionData, error: sessionError } =
+      await supabaseClient.auth.getSession();
+
+    if (sessionError) throw sessionError;
+
+    if (!sessionData.session) {
+      const { error } =
+        await supabaseClient.auth.signInAnonymously();
+
+      if (error) throw error;
+    }
+
+    const { data, error } = await supabaseClient.rpc(
+      "join_room_with_code",
+      {
+        p_room_code: roomCode,
+        p_nickname: playerName
+      }
+    );
+
+    if (error) throw error;
+
+    document.getElementById("displayName").textContent = playerName;
+    document.getElementById("joinScreen").style.display = "none";
+    document.getElementById("gameScreen").style.display = "block";
+
+    await watchRoom(roomCode);
+
+    console.log("入室成功！", data);
+
+  } catch (error) {
+    console.error("入室エラー:", error);
+    alert(
+      "入室できませんでした\n参加コードを確認してください\n\n" +
+      error.message
+    );
+
+  } finally {
+    button.disabled = false;
+    button.textContent = "JOIN THE GAME →";
+  }
+}
+
+// JavaScriptの終了
+</script>
 </body>
 </html>
