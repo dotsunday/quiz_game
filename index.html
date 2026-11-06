@@ -436,8 +436,13 @@ let currentRoomKey = null;
 // ルーム作成
 async function createRoom() {
   const button = document.getElementById("createRoomButton");
-const info = document.getElementById("roomInfo");
+  const info = document.getElementById("roomInfo");
   
+  if (!button || !info) {
+    console.error("要素が見つかりません");
+    return;
+  }
+
   button.disabled = true;
   button.textContent = "作成中...";
   info.textContent = "接続しています...";
@@ -471,7 +476,7 @@ const info = document.getElementById("roomInfo");
   } catch (error) {
     console.error("ルーム作成エラー:", error);
 
-    info.textContent = "エラー：" + error.message;
+    info.textContent = "エラー：" + (error.message || JSON.stringify(error));
     button.disabled = false;
     button.textContent = "ルームを作成";
   }
