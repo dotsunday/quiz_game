@@ -413,7 +413,7 @@ const categoryNames = {
 async function watchRoom(roomCode) {
   const { data: room, error } = await supabaseClient
     .from("rooms")
-    .select("id, current_question_text, current_question_category, current_points, question_status, buzz_open")
+  .select("id, status, current_question_text, current_question_category, current_points, question_status, buzz_open")
     .eq("room_code", roomCode)
     .single();
 
@@ -460,6 +460,16 @@ function updateQuestionScreen(room) {
   const answerArea = document.getElementById("answerArea");
   const buzzerButton = document.getElementById("buzzerButton");
 
+  // ルーム終了時
+  if (room.status === "closed") {
+    questionCategory.textContent = "GAME OVER";
+    questionText.textContent = "このルームは終了しました。";
+    waitingMessage.style.display = "none";
+    answerArea.style.display = "none";
+    return;
+  }
+
+  // 問題がまだない場合
   if (!room.current_question_text) {
     questionCategory.textContent = "WAITING FOR QUESTION";
     questionText.textContent = "司会者が問題を選ぶのを待っています。";
@@ -472,12 +482,46 @@ function updateQuestionScreen(room) {
     categoryNames[room.current_question_category] || "QUESTION";
 
   questionCategory.textContent = category;
-
   questionText.textContent = room.current_question_text;
 
-  waitingMessage.style.display = "block";
-  answerArea.style.display = "none";
-  buzzerButton.disabled = !(room.question_status === "active" && room.buzz_open);
+  // 問題が開始されているか確認
+  const isActive = room.question_status === "active";
+
+  waitingMessage.style.display = isActive ? "none" : "block";
+  answerArea.style.display = isActive ? "block" : "none";
+
+  // BUZZERの状態を更新
+  buzzerButton.disabled = !(isActive && room.buzz_open);
+  buzzerButton.textContent = "BUZZER !";
+}
+
+// BUZZERを押したときの処理
+async function pressBuzzer() {
+  const buzzerButton = document.getElementById("buzzerButton");
+
+  if (!playerRoomId || buzzerButton.disabled) return;
+
+  buzzerButton.disabled = true;
+  buzzerButton.textContent = "受付中...";
+
+  try {
+    const { data, error } = await supabaseClient.rpc("submit_buzz", {
+      p_room_id: playerRoomId
+    });
+
+    if (error) throw error;
+
+    const result = Array.isArray(data) ? data[0] : data;
+
+    if (!result) throw new Error("早押し結果を取得できませんでした");
+
+    buzzerButton.textContent = result.buzz_order + "番目！";
+
+  } catch (error) {
+    console.error("早押しエラー:", error);
+    buzzerButton.textContent = "BUZZER !";
+    alert("早押しを受け付けられませんでした。\n" + error.message);
+  }
 }
 
 // 入室処理
