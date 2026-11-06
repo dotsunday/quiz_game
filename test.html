@@ -198,8 +198,16 @@ header p {
 }
 
 /* 問題ボードのグリッド */
+/* ジャンルごとの問題ボード */
 .board-group {
   margin-bottom: 25px;
+  padding-bottom: 25px;
+  border-bottom: 2px dashed #999;
+}
+
+/* 最後のジャンルには区切り線をつけない */
+.board-group:last-child {
+  border-bottom: none;
 }
 
 .board {
