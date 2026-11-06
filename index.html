@@ -3,9 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>KNOW. - Player</title>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
+<title>KNOW. - Host Control Panel</title>
 <style>
 * {
   box-sizing: border-box;
@@ -15,55 +13,66 @@ body {
   margin: 0;
   padding: 20px 10px;
   background-color: #009D4E;
-  background-image:
-    linear-gradient(to right, rgba(255,255,255,0.15) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(255,255,255,0.15) 1px, transparent 1px);
   background-size: 60px 60px;
+  background-image: 
+    linear-gradient(to right, rgba(255, 255, 255, 0.15) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.15) 1px, transparent 1px);
   color: #1a1a1a;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
 }
 
+/* メインコンテナ */
 .container {
-  max-width: 600px;
+  max-width: 900px;
   margin: 0 auto;
   background: #fcfbf9;
-  border: 2px solid #1a1a1a;
   border-radius: 4px;
   box-shadow: 0 20px 40px rgba(0,0,0,0.15);
   overflow: hidden;
+  border: 2px solid #1a1a1a;
 }
 
+/* ヘッダー：左端に画像ロゴ、右端にテキストサブタイトル */
 header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 18px;
+  padding: 20px;
   border-bottom: 2px solid #1a1a1a;
   background: #fff;
-  gap: 10px;
 }
 
-header img {
-  width: 120px;
-  max-width: 100%;
+h1 {
+  margin: 0;
+  display: flex;
+  align-items: center;
+}
+
+h1 img {
+  max-width: 140px;
   height: auto;
+  display: block;
 }
 
 header p {
   margin: 0;
-  font-size: 0.7rem;
-  font-weight: 800;
-  letter-spacing: 0.08em;
+  font-size: 0.8rem;
+  letter-spacing: 0.05em;
+  color: #1a1a1a;
+  font-weight: 700;
 }
 
-main {
+/* コントロール全体レイアウト */
+.panel-body {
   padding: 20px;
 }
 
+/* 添付画像のピル型＋両サイドライン装飾（CONTENTS用） */
 .content-divider {
   display: flex;
   align-items: center;
-  margin: 15px 0 25px;
+  text-align: center;
+  margin: 25px 0 20px 0;
 }
 
 .content-divider::before,
@@ -74,296 +83,415 @@ main {
 }
 
 .content-badge {
-  padding: 7px 20px;
+  display: inline-block;
+  padding: 8px 24px;
   border: 2px solid #1a1a1a;
   border-radius: 50px;
   background: #fff;
-  font-size: 0.8rem;
+  color: #1a1a1a;
+  font-size: 0.85rem;
   font-weight: 800;
-  letter-spacing: 0.12em;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  margin: 0px;
+  box-shadow: 0 2px 0 #1a1a1a;
 }
 
-.label {
-  font-size: 0.75rem;
-  font-weight: 800;
-  letter-spacing: 0.1em;
-  margin-bottom: 8px;
+.section-title {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #1a1a1a;
+  margin-bottom: 10px;
+  letter-spacing: 0.2em;
 }
 
-input {
-  width: 100%;
-  padding: 14px;
-  border: 2px solid #1a1a1a;
-  border-radius: 2px;
-  background: #fff;
-  font-size: 1rem;
-  margin-bottom: 18px;
-}
-
-button {
-  cursor: pointer;
-  font-family: inherit;
-}
-
-.main-button {
-  width: 100%;
-  padding: 15px;
-  border: 2px solid #1a1a1a;
-  background: #009D4E;
+/* スコア表示エリア */
+.score-box {
+  background: #F18F50;
   color: #fff;
-  font-size: 1rem;
-  font-weight: 800;
-  letter-spacing: 0.08em;
-  box-shadow: 0 4px 0 #1a1a1a;
-}
-
-.main-button:active {
-  transform: translateY(3px);
-  box-shadow: 0 1px 0 #1a1a1a;
-}
-
-.note {
-  margin-top: 20px;
-  font-size: 0.75rem;
-  color: #777;
-  line-height: 1.6;
-  text-align: center;
-}
-
-#gameScreen {
-  display: none;
-}
-
-.player-info {
+  padding: 15px 20px;
+  border-radius: 2px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  gap: 10px;
-  background: #1a1a1a;
-  color: #fff;
-  padding: 15px;
   margin-bottom: 20px;
 }
 
-.player-info small {
+.score-box span {
+  font-size: 0.8rem;
+  letter-spacing: 0.1em;
   color: #aaa;
-  display: block;
+  text-transform: uppercase;
+}
+
+.score-box strong {
+  font-size: 2.2rem;
+  color: #ffffff;
+  font-family: monospace;
+}
+
+/* ランキングスコアボード */
+.leaderboard {
+  background: #1a1a1a;
+  color: #fff;
+  padding: 18px;
+  margin-bottom: 20px;
+  border: 2px solid #1a1a1a;
+}
+
+.leaderboard-header {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.8rem;
+  font-weight: 800;
+  letter-spacing: 0.18em;
+  color: #F18F50;
+  padding-bottom: 12px;
+  border-bottom: 1px solid #555;
+}
+
+.leaderboard-columns,
+.ranking-row {
+  display: grid;
+  grid-template-columns: 55px 1fr 85px;
+  align-items: center;
+  gap: 8px;
+}
+
+.leaderboard-columns {
+  padding: 12px 5px 8px;
+  color: #999;
   font-size: 0.7rem;
   letter-spacing: 0.1em;
 }
 
-.player-info strong {
-  font-size: 1.3rem;
+.ranking-row {
+  padding: 13px 5px;
+  border-top: 1px solid #444;
 }
 
-.score {
-  color: #ffd166;
-  font-family: monospace;
-  font-size: 1.5rem;
-}
-
-.question-box {
-  border: 2px solid #1a1a1a;
-  background: #fff;
-  padding: 20px;
-  text-align: center;
-  margin-bottom: 20px;
-}
-
-.question-box small {
-  font-weight: 800;
-  letter-spacing: 0.12em;
-  color: #777;
-}
-
-.question-box h2 {
-  font-size: 1.2rem;
-  line-height: 1.6;
-  margin: 15px 0 5px;
-}
-
-.waiting {
-  padding: 25px 15px;
-  background: #eeece7;
-  border: 1px dashed #aaa;
-  text-align: center;
-  line-height: 1.7;
-  font-size: 0.9rem;
-}
-
-.waiting strong {
-  display: block;
+.ranking-number {
+  color: #F18F50;
   font-size: 1.1rem;
-  margin-bottom: 8px;
+  font-weight: 800;
+  font-family: monospace;
 }
 
-.buzzer {
-  width: 100%;
-  padding: 22px 10px;
-  border: 3px solid #1a1a1a;
-  border-radius: 3px;
-  background: #d90429;
+.ranking-name {
+  font-size: 0.95rem;
+  font-weight: 700;
+  overflow-wrap: anywhere;
+}
+
+.ranking-score {
+  text-align: right;
   color: #fff;
-  font-size: 1.4rem;
-  font-weight: 900;
-  letter-spacing: 0.1em;
+  font-size: 1.2rem;
+  font-weight: 800;
+  font-family: monospace;
 }
 
-.buzzer:disabled {
-  background: #aaa;
-  border-color: #888;
-  cursor: default;
+.ranking-empty {
+  padding: 25px 5px;
+  text-align: center;
+  color: #aaa;
+  font-size: 0.85rem;
 }
 
-.choices {
+/* 問題ボードのグリッド */
+/* ジャンルごとの問題ボード */
+.board-group {
+  margin-bottom: 25px;
+  padding-bottom: 25px;
+  border-bottom: 2px dashed #999;
+}
+
+/* 最後のジャンルには区切り線をつけない */
+.board-group:last-child {
+  border-bottom: none;
+}
+
+.board {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: repeat(3, 1fr);
   gap: 10px;
+}
+
+/* タイルデザイン（数字のみでスッキリと） */
+.tile {
+  background: #fff;
+  color: #1a1a1a;
+  border: 2px solid #1a1a1a;
+  border-radius: 50px;
+  padding: 16px 5px;
+  font-size: 1.2rem;
+  font-weight: 800;
+  font-family: monospace;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  text-align: center;
+}
+
+.tile:hover:not(:disabled) {
+  background: #1a1a1a;
+  color: #fff;
+}
+
+.tile:disabled {
+  background: #e0deda;
+  color: #888;
+  border-color: #ccc;
+  cursor: default;
+  font-family: inherit;
+  font-size: 1.1rem;
+}
+
+/* モーダル */
+.modal {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(26,26,26,0.8);
+  justify-content: center;
+  align-items: center;
+  padding: 15px;
+  backdrop-filter: blur(4px);
+}
+
+.modal-content {
+  background: #fcfbf9;
+  border: 2px solid #1a1a1a;
+  border-radius: 4px;
+  padding: 25px;
+  width: 100%;
+  max-width: 480px;
+  box-shadow: 0 15px 30px rgba(0,0,0,0.3);
+}
+
+.modal-content h2 {
+  margin-top: 0;
+  font-size: 1rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: #666;
+  border-bottom: 1px solid #ddd;
+  padding-bottom: 8px;
+}
+
+.question {
+  font-size: 1.2rem;
+  margin: 20px 0;
+  font-weight: 700;
+  line-height: 1.4;
+}
+
+.answer {
+  display: none;
+  background: #fff;
+  border-left: 4px solid #009D4E;
+  padding: 12px;
+  font-size: 1.1rem;
+  margin: 15px 0;
+  font-weight: bold;
+}
+
+/* アクションボタン */
+.btn-row {
+  display: flex;
+  gap: 8px;
   margin-top: 15px;
 }
 
-.choice {
-  padding: 16px 8px;
+.action {
+  flex: 1;
   border: 2px solid #1a1a1a;
-  background: #fff;
-  font-size: 0.95rem;
+  border-radius: 2px;
+  padding: 12px 8px;
+  font-size: 0.9rem;
   font-weight: 700;
+  cursor: pointer;
+  text-transform: uppercase;
 }
 
-.choice:disabled {
-  opacity: 0.5;
+.reveal { background: #fff; color: #1a1a1a; }
+.correct { background: #009D4E; color: #fff; }
+.wrong { background: #d90429; color: #fff; }
+.close-btn { background: #1a1a1a; color: #fff; width: 100%; margin-top: 12px; }
+
+.reset-container {
+  text-align: center;
+  margin-top: 30px;
+  border-top: 1px solid #ddd;
+  padding-top: 20px;
+}
+
+.reset {
+  background: transparent;
+  color: #666;
+  border: 2px solid #ccc;
+  border-radius: 2px;
+  padding: 8px 16px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+  /* ルーム作成エリア */
+.room-box {
+  background: #fff;
+  border: 2px solid #1a1a1a;
+  padding: 15px;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.room-title {
+  font-size: 0.85rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  margin-bottom: 10px;
+}
+
+.room-button {
+  width: 100%;
+  background: #009D4E;
+  color: #fff;
+  border: 2px solid #1a1a1a;
+  padding: 13px;
+  font-size: 1rem;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.room-button:disabled {
+  opacity: 0.6;
   cursor: default;
 }
 
-footer {
-  padding: 15px;
-  border-top: 2px solid #1a1a1a;
-  text-align: center;
-  font-size: 0.7rem;
+.room-info {
+  margin-top: 12px;
+  font-size: 0.9rem;
   font-weight: 700;
-  letter-spacing: 0.1em;
-}
-
-@media (max-width: 400px) {
-  header img {
-    width: 100px;
-  }
-
-  header p {
-    font-size: 0.65rem;
-  }
-
-  main {
-    padding: 15px;
-  }
+  overflow-wrap: anywhere;
 }
 </style>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 
 <body>
 
 <div class="container">
-
   <header>
-    <img src="titlelogo_black_nyan.png" alt="KNOW.">
+    <h1>
+      <img src="titlelogo_black_nyan.png" alt="KNOW.">
+    </h1>
     <p>I KNOW. DO YOU?</p>
   </header>
 
-  <main>
+  <div class="panel-body">
+ <!-- ランキングスコアボード -->
+<div class="leaderboard">
+  <div class="leaderboard-header">
+    <span>KNOW.</span>
+    <span>RANKING</span>
+  </div>
 
-    <!-- 入室画面 -->
-    <section id="joinScreen">
+  <div class="leaderboard-columns">
+    <span>RANK</span>
+    <span>PLAYER</span>
+    <span>SCORE</span>
+  </div>
 
-      <div class="content-divider">
-        <span class="content-badge">PLAYER ENTRY</span>
+  <div id="rankingList" class="ranking-list">
+    <div class="ranking-empty">
+      参加者の入室を待っています
+    </div>
+  </div>
+</div>
+
+<!-- 以前の得点表示用。今のゲーム処理との互換性のため残す -->
+<strong id="score" hidden>0</strong>
+
+    <!-- ルーム作成エリア -->
+<div class="room-box">
+  <div class="room-title">HOST ROOM</div>
+
+  <button
+    class="room-button"
+    id="createRoomButton"
+    onclick="createRoom()"
+  >
+    ルームを作成
+  </button>
+
+  <div class="room-info" id="roomInfo">
+    まだルームは作成されていません
+  </div>
+</div>
+    
+    <!-- CONTENTSの大見出し -->
+    <div class="content-divider">
+      <span class="content-badge">CONTENTS</span>
+    </div>
+
+    <div class="board-group">
+      <div class="section-title">（  文学  ）</div>
+      <div class="board" id="language"></div>
+    </div>
+
+    <div class="board-group">
+      <div class="section-title">（  雑学  ）</div>
+      <div class="board" id="trivia"></div>
+    </div>
+
+    <div class="board-group">
+      <div class="section-title">（  文化・芸術  ）</div>
+      <div class="board" id="culture"></div>
+    </div>
+
+    <div class="board-group">
+      <div class="section-title">（  アニメ  ）</div>
+      <div class="board" id="anime"></div>
+    </div>
+
+    <div class="board-group">
+      <div class="section-title">（  ネットスラング  ）</div>
+      <div class="board" id="net"></div>
+    </div>
+    
+    <div class="reset-container">
+      <button class="reset" onclick="resetGame()">RESET</button>
+    </div>
+  </div>
+</div>
+
+<!-- モーダルウィンドウ -->
+<div class="modal" id="modal">
+  <div class="modal-content">
+    <h2 id="questionTitle">QUESTION</h2>
+    <div class="question" id="question"></div>
+
+    <button class="action reveal" onclick="showAnswer()" style="width:100%;">
+      答え
+    </button>
+
+    <div class="answer" id="answer"></div>
+
+    <div id="judge" style="display:none">
+      <div class="btn-row">
+        <button class="action correct" onclick="judge(true)">正解！ (+Pts)</button>
+        <button class="action wrong" onclick="judge(false)">不正解</button>
       </div>
+    </div>
 
-<p class="label">ROOM CODE / 参加コード</p>
-<input
-  id="roomCode"
-  type="text"
-  placeholder="参加コードを入力してください"
->
-      <p class="label">YOUR NAME / ニックネーム</p>
-      <input
-        id="playerName"
-        type="text"
-        placeholder="名前を入力してください"
-        maxlength="12"
-      >
-
-      <button class="main-button" onclick="joinGame()">
-        JOIN THE GAME →
-      </button>
-
-    </section>
-
-    <!-- ゲーム画面 -->
-    <section id="gameScreen">
-
-      <div class="content-divider">
-        <span class="content-badge">PLAYER ROOM</span>
-      </div>
-
-      <div class="player-info">
-        <div>
-          <small>PLAYER</small>
-          <strong id="displayName">PLAYER</strong>
-        </div>
-        <div style="text-align:right;">
-          <small>YOUR SCORE</small>
-          <strong class="score" id="displayScore">0 pts</strong>
-        </div>
-      </div>
-
-      <div class="question-box">
-        <small id="questionCategory">WAITING FOR QUESTION</small>
-        <h2 id="questionText">
-          ホストが問題を選ぶのを待っています
-        </h2>
-      </div>
-
-      <div class="waiting" id="waitingMessage">
-        <strong>//STAY TUNED//</strong>
-        次の問題が出題されるまで<br>
-        しばらくお待ちください
-      </div>
-
-      <div id="answerArea" style="display:none;">
-
-        <button class="buzzer" id="buzzerButton" disabled>
-          BUZZER !
-        </button>
-
-        <div class="choices">
-          <button class="choice" disabled>CHOICE A</button>
-          <button class="choice" disabled>CHOICE B</button>
-          <button class="choice" disabled>CHOICE C</button>
-          <button class="choice" disabled>CHOICE D</button>
-        </div>
-
-      </div>
-
-      <p class="note">
-        ※ 現在は画面確認用です<br>
-        司会者との連動機能はこれから追加します
-      </p>
-
-    </section>
-
-  </main>
-
-  <footer>
-    KNOW.
-  </footer>
-
+    <button class="action close-btn" onclick="closeModal()">
+      CLOSE
+    </button>
+  </div>
 </div>
 
 <script>
-// Supabase接続設定
+  // Supabase接続設定
 const SUPABASE_URL = "https://jdzrpditjbcnbavpadjp.supabase.co";
-
-// 司会者ページと同じ公開用キーを設定
 const SUPABASE_KEY = "sb_publishable_9GfTenwqD00b3hU4aBm3Mg_T2t8R6hC";
 
 const supabaseClient = window.supabase.createClient(
@@ -371,156 +499,299 @@ const supabaseClient = window.supabase.createClient(
   SUPABASE_KEY
 );
 
-// 現在参加しているルーム
-let playerRoomId = null;
+// 匿名ログイン
+async function connectSupabase() {
+  const { data: sessionData, error: sessionError } =
+    await supabaseClient.auth.getSession();
 
-// ルームの更新を監視するチャンネル
-let playerRoomChannel = null;
-
-// ジャンル名を日本語に変換
-const categoryNames = {
-  language: "文学",
-  trivia: "雑学",
-  culture: "文化・芸術",
-  anime: "アニメ",
-  net: "ネットスラング"
-};
-
-// 参加中のルーム情報を取得
-async function watchRoom(roomCode) {
-  const { data: room, error } = await supabaseClient
-    .from("rooms")
-    .select("id, current_question_text, current_question_category, current_points, question_status, buzz_open")
-    .eq("room_code", roomCode)
-    .single();
-
-  if (error) {
-    console.error("ルーム情報取得エラー:", error);
-    alert("ルーム情報を取得できませんでした");
+  if (sessionError) {
+    console.error(sessionError);
     return;
   }
 
-  playerRoomId = room.id;
+  if (!sessionData.session) {
+    const { error } =
+      await supabaseClient.auth.signInAnonymously();
 
-  // 現在の問題を画面に表示
-  updateQuestionScreen(room);
-
-  // 以前の監視があれば終了
-  if (playerRoomChannel) {
-    await supabaseClient.removeChannel(playerRoomChannel);
+    if (error) {
+      console.error(error);
+      return;
+    }
   }
 
-  // ルーム情報の変更をリアルタイムで監視
-  playerRoomChannel = supabaseClient
-    .channel("player-room-" + playerRoomId)
+  console.log("Supabase接続準備OK！");
+}
+
+const supabaseReady = connectSupabase();
+
+// 現在のルーム情報
+let currentRoomId = null;
+let currentRoomKey = null;
+
+// ランキング更新用
+let rankingChannel = null;
+
+// 参加者のランキングを取得
+async function loadPlayers() {
+  if (!currentRoomId) return;
+
+  const { data, error } = await supabaseClient
+    .from("players")
+    .select("id, nickname, score")
+    .eq("room_id", currentRoomId)
+    .order("score", { ascending: false });
+
+  if (error) {
+    console.error("ランキング取得エラー:", error);
+    return;
+  }
+
+  const rankingList = document.getElementById("rankingList");
+  rankingList.innerHTML = "";
+
+  if (!data || data.length === 0) {
+    rankingList.innerHTML =
+      '<div class="ranking-empty">参加者の入室を待っています</div>';
+    return;
+  }
+
+  let previousScore = null;
+  let previousRank = 0;
+
+  data.forEach((player, index) => {
+    const rank =
+      player.score === previousScore ? previousRank : index + 1;
+
+    previousScore = player.score;
+    previousRank = rank;
+
+    const row = document.createElement("div");
+    row.className = "ranking-row";
+
+    const rankElement = document.createElement("span");
+    rankElement.className = "ranking-number";
+    rankElement.textContent = String(rank).padStart(2, "0");
+
+    const nameElement = document.createElement("span");
+    nameElement.className = "ranking-name";
+    nameElement.textContent = player.nickname;
+
+    const scoreElement = document.createElement("span");
+    scoreElement.className = "ranking-score";
+    scoreElement.textContent = player.score + " pt";
+
+    row.appendChild(rankElement);
+    row.appendChild(nameElement);
+    row.appendChild(scoreElement);
+
+    rankingList.appendChild(row);
+  });
+}
+
+// 参加者の入室・得点変更を監視
+function startScoreboard() {
+  if (!currentRoomId) return;
+
+  if (rankingChannel) {
+    supabaseClient.removeChannel(rankingChannel);
+  }
+
+  loadPlayers();
+
+  rankingChannel = supabaseClient
+    .channel("ranking-" + currentRoomId)
     .on(
       "postgres_changes",
       {
-        event: "UPDATE",
+        event: "*",
         schema: "public",
-        table: "rooms",
-        filter: "id=eq." + playerRoomId
+        table: "players",
+        filter: "room_id=eq." + currentRoomId
       },
-      (payload) => {
-        updateQuestionScreen(payload.new);
+      () => {
+        loadPlayers();
       }
     )
     .subscribe();
 }
 
-// 問題画面を更新
-function updateQuestionScreen(room) {
-  const questionText = document.getElementById("questionText");
-  const questionCategory = document.getElementById("questionCategory");
-  const waitingMessage = document.getElementById("waitingMessage");
-  const answerArea = document.getElementById("answerArea");
-  const buzzerButton = document.getElementById("buzzerButton");
 
-  if (!room.current_question_text) {
-    questionCategory.textContent = "WAITING FOR QUESTION";
-    questionText.textContent = "ホストが問題を選ぶのを待っています";
-    waitingMessage.style.display = "block";
-    answerArea.style.display = "none";
+// ルーム作成
+async function createRoom() {
+  const button = document.getElementById("createRoomButton");
+  const info = document.getElementById("roomInfo");
+
+  if (!button || !info) {
+    console.error("要素が見つかりません");
     return;
   }
 
-  const category =
-    categoryNames[room.current_question_category] || "QUESTION";
-
-  questionCategory.textContent =
-    category + " / " + room.current_points + " POINTS";
-
-  questionText.textContent = room.current_question_text;
-
-  waitingMessage.style.display = "block";
-  answerArea.style.display = "none";
-  buzzerButton.disabled = true;
-}
-
-// 入室処理
-async function joinGame() {
-  const playerName = document.getElementById("playerName").value.trim();
-  const roomCode = document.getElementById("roomCode").value.trim();
-
-  if (!/^\d{6}$/.test(roomCode)) {
-    alert("数字6桁で入力してください");
-    return;
-  }
-
-  if (!playerName) {
-    alert("ニックネームを入力してください");
-    return;
-  }
-
-  const button = document.querySelector(".main-button");
   button.disabled = true;
-  button.textContent = "JOINING...";
+  button.textContent = "作成中...";
+  info.textContent = "接続しています...";
 
   try {
-    const { data: sessionData, error: sessionError } =
-      await supabaseClient.auth.getSession();
+    // Supabaseへの接続完了を待つ
+    await supabaseReady;
 
-    if (sessionError) throw sessionError;
-
-    if (!sessionData.session) {
-      const { error } =
-        await supabaseClient.auth.signInAnonymously();
-
-      if (error) throw error;
-    }
-
-    const { data, error } = await supabaseClient.rpc(
-      "join_room_with_code",
-      {
-        p_room_code: roomCode,
-        p_nickname: playerName
-      }
-    );
+    // 6桁コードでルームを作成
+    const { data, error } =
+      await supabaseClient.rpc("host_create_room_with_code");
 
     if (error) throw error;
 
-    document.getElementById("displayName").textContent = playerName;
-    document.getElementById("joinScreen").style.display = "none";
-    document.getElementById("gameScreen").style.display = "block";
+    const room = Array.isArray(data) ? data[0] : data;
 
-    await watchRoom(roomCode);
+    if (!room || !room.created_room_code) {
+      throw new Error("ルーム情報を取得できませんでした");
+    }
 
-    console.log("入室成功！", data);
+    currentRoomId = room.created_room_id;
+    currentRoomKey = room.created_room_code;
+
+    startScoreboard();
+
+    // 6桁の参加コードを表示
+    info.textContent = "参加コード：" + currentRoomKey;
+    button.textContent = "ルーム作成済み";
+
+    console.log("ルーム作成成功！", room);
 
   } catch (error) {
-    console.error("入室エラー:", error);
-    alert(
-      "入室できませんでした\n参加コードを確認してください\n\n" +
-      error.message
-    );
+    console.error("ルーム作成エラー:", error);
 
-  } finally {
+    info.textContent = "エラー：" + (error.message || JSON.stringify(error));
     button.disabled = false;
-    button.textContent = "JOIN THE GAME →";
+    button.textContent = "ルームを作成";
   }
 }
 
-// JavaScriptの終了
+const questions = {
+  language: [
+    { point: 10, q: "いちもんめ", a: "こたえ" },
+    { point: 20, q: "にもんめ", a: "こたえ" },
+    { point: 30, q: "さんもんめ", a: "こたえ" },
+    { point: 40, q: "よんもんめ", a: "（答え）" },
+    { point: 50, q: "（5問目の問題）", a: "（答え）" }
+  ],
+  trivia: [
+    { point: 10, q: "いちもんめ", a: "こたえ" },
+    { point: 20, q: "語源はポルトガル語の「コンフェイト」で、戦国時代に日本へ伝わった、星のような形の砂糖菓子は何？", a: "金平糖" },
+    { point: 30, q: "さんもんめ", a: "こたえ" },
+    { point: 40, q: "よんもんめ", a: "こたえ" },
+    { point: 50, q: "「カレーは飲み物」という名言を残したプロレスラーは誰？", a: "（ウガンダ・トラ）" }
+  ],
+  culture: [
+    { point: 10, q: "いちもんめ", a: "こたえ" },
+    { point: 20, q: "にもんめ", a: "答え" },
+    { point: 30, q: "57577で構成される和歌や短歌のことをその文字数からなんと呼ぶ？", a: "三十一文字(みそひともじ)" },
+    { point: 40, q: "（4問目の問題）", a: "（答え）" },
+    { point: 50, q: "（5問目の問題）", a: "（答え）" }
+  ],
+  anime: [
+    { point: 10, q: "いちもんめ", a: "こたえ" },
+    { point: 20, q: "にもんめ", a: "こたえ" },
+    { point: 30, q: "さんもんめ", a: "こたえ" },
+    { point: 40, q: "（4問目の問題）", a: "（答え）" },
+    { point: 50, q: "（5問目の問題）", a: "（答え）" }
+  ],
+  net: [
+    { point: 10, q: "いちもんめ", a: "こたえ" },
+    { point: 20, q: "にもんめ", a: "こたえ" },
+    { point: 30, q: "さんもんめ", a: "こたえ" },
+    { point: 40, q: "（4問目の問題）", a: "（答え）" },
+    { point: 50, q: "（5問目の問題）", a: "（答え）" }
+  ],
+};
+
+let score = 0;
+let currentQuestion = null;
+let currentTile = null;
+
+function createBoard() {
+  for (const category in questions) {
+    const board = document.getElementById(category);
+    if (!board) continue;
+    board.innerHTML = "";
+
+    questions[category].forEach((item) => {
+      const button = document.createElement("button");
+      button.className = "tile";
+      
+      button.textContent = item.point;
+      
+      button.onclick = () => {
+        openQuestion(item, button);
+      };
+      board.appendChild(button);
+    });
+  }
+}
+
+async function openQuestion(item, tile) {
+  currentQuestion = item;
+  currentTile = tile;
+
+  document.getElementById("questionTitle").textContent = item.point + " POINTS";
+  document.getElementById("question").textContent = item.q;
+  document.getElementById("answer").textContent = "正解：" + item.a;
+  document.getElementById("answer").style.display = "none";
+  document.getElementById("judge").style.display = "none";
+  document.getElementById("modal").style.display = "flex";
+
+  // ルームが作成されていなければ保存しない
+  if (!currentRoomId) return;
+
+  // 問題情報をSupabaseに保存
+  const { error } = await supabaseClient
+    .from("rooms")
+    .update({
+      current_question_text: item.q,
+      current_question_category: Object.keys(questions).find(
+        category => questions[category].includes(item)
+      ),
+      current_points: item.point,
+      question_status: "waiting",
+      buzz_open: false
+    })
+    .eq("id", currentRoomId);
+
+  if (error) {
+    console.error("問題情報の保存エラー:", error);
+    alert("問題情報を保存できませんでした。");
+  }
+}
+
+function showAnswer() {
+  document.getElementById("answer").style.display = "block";
+  document.getElementById("judge").style.display = "block";
+}
+
+function judge(isCorrect) {
+  if (isCorrect) {
+    score += currentQuestion.point;
+  }
+  document.getElementById("score").textContent = score;
+  currentTile.disabled = true;
+  currentTile.textContent = "USED";
+  closeModal();
+}
+
+function closeModal() {
+  document.getElementById("modal").style.display = "none";
+}
+
+function resetGame() {
+  if (!confirm("最初からやりなおしますか？")) {
+    return;
+  }
+  score = 0;
+  document.getElementById("score").textContent = score;
+  createBoard();
+}
+
+createBoard();
 </script>
+
 </body>
 </html>
