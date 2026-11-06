@@ -625,7 +625,10 @@ let buzzChannel = null;
 
 // ルームを閉じる
 async function closeRoom() {
-  if (!currentRoomId) return;
+  if (!currentRoomId) {
+    alert("ルームIDが取得できていません！");
+    return;
+  }
 
   if (!confirm("ルームを閉じますか？参加者もゲームに参加できなくなります。")) {
     return;
