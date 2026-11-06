@@ -496,6 +496,11 @@ header p {
 <div id="buzzList" style="margin: 20px 0;">
   <p>早押し受付を待っています</p>
 </div>
+
+<button class="action" onclick="openBuzzer()" style="width:100%; margin-bottom:15px;">
+  START
+</button>
+
     <button class="action reveal" onclick="showAnswer()" style="width:100%;">
       答え
     </button>
@@ -620,7 +625,10 @@ let buzzChannel = null;
 
 // ルームを閉じる
 async function closeRoom() {
-  if (!currentRoomId) return;
+  if (!currentRoomId) {
+    alert("ルームIDが取得できていません！");
+    return;
+  }
 
   if (!confirm("ルームを閉じますか？参加者もゲームに参加できなくなります。")) {
     return;
@@ -1014,6 +1022,39 @@ if (error) {
 function showAnswer() {
   document.getElementById("answer").style.display = "block";
   document.getElementById("judge").style.display = "block";
+}
+
+// 早押し受付を開始
+async function openBuzzer() {
+  if (!currentRoomId) {
+    alert("ルームIDが取得できていません！");
+    return;
+  }
+
+  await supabaseReady;
+
+  const { data, error } = await supabaseClient
+    .from("rooms")
+    .update({
+      question_status: "active",
+      buzz_open: true
+    })
+    .eq("id", currentRoomId)
+    .select();
+
+  if (error) {
+    console.error("早押し受付開始エラー:", error);
+    alert("早押し受付を開始できませんでした：" + error.message);
+    return;
+  }
+
+  if (!data || data.length === 0) {
+    alert("ルーム情報を更新できませんでした。");
+    return;
+  }
+
+  console.log("早押し受付を開始しました！");
+  loadBuzzList();
 }
 
 function judge(isCorrect) {
