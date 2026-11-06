@@ -427,7 +427,7 @@ async function connectSupabase() {
   console.log("Supabase接続準備OK！");
 }
 
-connectSupabase();
+const supabaseReady = connectSupabase();
   // 現在のルーム情報
 let currentRoomId = null;
 let currentRoomKey = null;
