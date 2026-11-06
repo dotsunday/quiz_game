@@ -5,313 +5,312 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>KNOW. - Host Control Panel</title>
 <style>
-- {
-
-  box-sizing: border-box;
+* {
+  box-sizing: border-box;
 }
 
 body {
-  margin: 0;
-  padding: 20px 10px;
-  background-color: #009D4E;
-  background-size: 60px 60px;
-  background-image: 
-    linear-gradient(to right, rgba(255, 255, 255, 0.15) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(255, 255, 255, 0.15) 1px, transparent 1px);
-  color: #1a1a1a;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  margin: 0;
+  padding: 20px 10px;
+  background-color: #009D4E;
+  background-size: 60px 60px;
+  background-image: 
+    linear-gradient(to right, rgba(255, 255, 255, 0.15) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.15) 1px, transparent 1px);
+  color: #1a1a1a;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
 }
 
 /* メインコンテナ */
 .container {
-  max-width: 900px;
-  margin: 0 auto;
-  background: #fcfbf9;
-  border-radius: 4px;
-  box-shadow: 0 20px 40px rgba(0,0,0,0.15);
-  overflow: hidden;
-  border: 2px solid #1a1a1a;
+  max-width: 900px;
+  margin: 0 auto;
+  background: #fcfbf9;
+  border-radius: 4px;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+  overflow: hidden;
+  border: 2px solid #1a1a1a;
 }
 
 /* ヘッダー：左端に画像ロゴ、右端にテキストサブタイトル */
 header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 20px;
-  border-bottom: 2px solid #1a1a1a;
-  background: #fff;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px;
+  border-bottom: 2px solid #1a1a1a;
+  background: #fff;
 }
 
 h1 {
-  margin: 0;
-  display: flex;
-  align-items: center;
+  margin: 0;
+  display: flex;
+  align-items: center;
 }
 
 h1 img {
-  max-width: 140px;
-  height: auto;
-  display: block;
+  max-width: 140px;
+  height: auto;
+  display: block;
 }
 
 header p {
-  margin: 0;
-  font-size: 0.8rem;
-  letter-spacing: 0.05em;
-  color: #1a1a1a;
-  font-weight: 700;
+  margin: 0;
+  font-size: 0.8rem;
+  letter-spacing: 0.05em;
+  color: #1a1a1a;
+  font-weight: 700;
 }
 
 /* コントロール全体レイアウト */
 .panel-body {
-  padding: 20px;
+  padding: 20px;
 }
 
 /* 添付画像のピル型＋両サイドライン装飾（CONTENTS用） */
 .content-divider {
-  display: flex;
-  align-items: center;
-  text-align: center;
-  margin: 25px 0 20px 0;
+  display: flex;
+  align-items: center;
+  text-align: center;
+  margin: 25px 0 20px 0;
 }
 
 .content-divider::before,
 .content-divider::after {
-  content: "";
-  flex: 1;
-  border-bottom: 2px solid #1a1a1a;
+  content: "";
+  flex: 1;
+  border-bottom: 2px solid #1a1a1a;
 }
 
 .content-badge {
-  display: inline-block;
-  padding: 8px 24px;
-  border: 2px solid #1a1a1a;
-  border-radius: 50px;
-  background: #fff;
-  color: #1a1a1a;
-  font-size: 0.85rem;
-  font-weight: 800;
-  letter-spacing: 0.15em;
-  text-transform: uppercase;
-  margin: 0px;
-  box-shadow: 0 2px 0 #1a1a1a;
+  display: inline-block;
+  padding: 8px 24px;
+  border: 2px solid #1a1a1a;
+  border-radius: 50px;
+  background: #fff;
+  color: #1a1a1a;
+  font-size: 0.85rem;
+  font-weight: 800;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  margin: 0px;
+  box-shadow: 0 2px 0 #1a1a1a;
 }
 
 .section-title {
-  font-size: 0.85rem;
-  font-weight: 700;
-  color: #1a1a1a;
-  margin-bottom: 10px;
-  letter-spacing: 0.2em;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #1a1a1a;
+  margin-bottom: 10px;
+  letter-spacing: 0.2em;
 }
 
 /* スコア表示エリア */
 .score-box {
-  background: #F18F50;
-  color: #fff;
-  padding: 15px 20px;
-  border-radius: 2px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 20px;
+  background: #F18F50;
+  color: #fff;
+  padding: 15px 20px;
+  border-radius: 2px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
 }
 
 .score-box span {
-  font-size: 0.8rem;
-  letter-spacing: 0.1em;
-  color: #aaa;
-  text-transform: uppercase;
+  font-size: 0.8rem;
+  letter-spacing: 0.1em;
+  color: #aaa;
+  text-transform: uppercase;
 }
 
 .score-box strong {
-  font-size: 2.2rem;
-  color: #ffffff;
-  font-family: monospace;
+  font-size: 2.2rem;
+  color: #ffffff;
+  font-family: monospace;
 }
 
 /* ランキングスコアボード */
 .leaderboard {
-  background: #1a1a1a;
-  color: #fff;
-  padding: 18px;
-  margin-bottom: 20px;
-  border: 2px solid #1a1a1a;
+  background: #1a1a1a;
+  color: #fff;
+  padding: 18px;
+  margin-bottom: 20px;
+  border: 2px solid #1a1a1a;
 }
 
 .leaderboard-header {
-  display: flex;
-  justify-content: space-between;
-  font-size: 0.8rem;
-  font-weight: 800;
-  letter-spacing: 0.18em;
-  color: #F18F50;
-  padding-bottom: 12px;
-  border-bottom: 1px solid #555;
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.8rem;
+  font-weight: 800;
+  letter-spacing: 0.18em;
+  color: #F18F50;
+  padding-bottom: 12px;
+  border-bottom: 1px solid #555;
 }
 
 .leaderboard-columns,
 .ranking-row {
-  display: grid;
-  grid-template-columns: 55px 1fr 85px;
-  align-items: center;
-  gap: 8px;
+  display: grid;
+  grid-template-columns: 55px 1fr 85px;
+  align-items: center;
+  gap: 8px;
 }
 
 .leaderboard-columns {
-  padding: 12px 5px 8px;
-  color: #999;
-  font-size: 0.7rem;
-  letter-spacing: 0.1em;
+  padding: 12px 5px 8px;
+  color: #999;
+  font-size: 0.7rem;
+  letter-spacing: 0.1em;
 }
 
 .ranking-row {
-  padding: 13px 5px;
-  border-top: 1px solid #444;
+  padding: 13px 5px;
+  border-top: 1px solid #444;
 }
 
 .ranking-number {
-  color: #F18F50;
-  font-size: 1.1rem;
-  font-weight: 800;
-  font-family: monospace;
+  color: #F18F50;
+  font-size: 1.1rem;
+  font-weight: 800;
+  font-family: monospace;
 }
 
 .ranking-name {
-  font-size: 0.95rem;
-  font-weight: 700;
-  overflow-wrap: anywhere;
+  font-size: 0.95rem;
+  font-weight: 700;
+  overflow-wrap: anywhere;
 }
 
 .ranking-score {
-  text-align: right;
-  color: #fff;
-  font-size: 1.2rem;
-  font-weight: 800;
-  font-family: monospace;
+  text-align: right;
+  color: #fff;
+  font-size: 1.2rem;
+  font-weight: 800;
+  font-family: monospace;
 }
 
 .ranking-empty {
-  padding: 25px 5px;
-  text-align: center;
-  color: #aaa;
-  font-size: 0.85rem;
+  padding: 25px 5px;
+  text-align: center;
+  color: #aaa;
+  font-size: 0.85rem;
 }
 
 /* 問題ボードのグリッド */
 /* ジャンルごとの問題ボード */
 .board-group {
-  margin-bottom: 25px;
-  padding-bottom: 25px;
-  border-bottom: 2px dashed #999;
+  margin-bottom: 25px;
+  padding-bottom: 25px;
+  border-bottom: 2px dashed #999;
 }
 
 /* 最後のジャンルには区切り線をつけない */
 .board-group:last-child {
-  border-bottom: none;
+  border-bottom: none;
 }
 
 .board {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 10px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
 }
 
 /* タイルデザイン（数字のみでスッキリと） */
 .tile {
-  background: #fff;
-  color: #1a1a1a;
-  border: 2px solid #1a1a1a;
-  border-radius: 50px;
-  padding: 16px 5px;
-  font-size: 1.2rem;
-  font-weight: 800;
-  font-family: monospace;
-  cursor: pointer;
-  transition: all 0.15s ease;
-  text-align: center;
+  background: #fff;
+  color: #1a1a1a;
+  border: 2px solid #1a1a1a;
+  border-radius: 50px;
+  padding: 16px 5px;
+  font-size: 1.2rem;
+  font-weight: 800;
+  font-family: monospace;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  text-align: center;
 }
 
 .tile:hover:not(:disabled) {
-  background: #1a1a1a;
-  color: #fff;
+  background: #1a1a1a;
+  color: #fff;
 }
 
 .tile:disabled {
-  background: #e0deda;
-  color: #888;
-  border-color: #ccc;
-  cursor: default;
-  font-family: inherit;
-  font-size: 1.1rem;
+  background: #e0deda;
+  color: #888;
+  border-color: #ccc;
+  cursor: default;
+  font-family: inherit;
+  font-size: 1.1rem;
 }
 
 /* モーダル */
 .modal {
-  display: none;
-  position: fixed;
-  inset: 0;
-  background: rgba(26,26,26,0.8);
-  justify-content: center;
-  align-items: center;
-  padding: 15px;
-  backdrop-filter: blur(4px);
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(26,26,26,0.8);
+  justify-content: center;
+  align-items: center;
+  padding: 15px;
+  backdrop-filter: blur(4px);
 }
 
 .modal-content {
-  background: #fcfbf9;
-  border: 2px solid #1a1a1a;
-  border-radius: 4px;
-  padding: 25px;
-  width: 100%;
-  max-width: 480px;
-  box-shadow: 0 15px 30px rgba(0,0,0,0.3);
+  background: #fcfbf9;
+  border: 2px solid #1a1a1a;
+  border-radius: 4px;
+  padding: 25px;
+  width: 100%;
+  max-width: 480px;
+  box-shadow: 0 15px 30px rgba(0,0,0,0.3);
 }
 
 .modal-content h2 {
-  margin-top: 0;
-  font-size: 1rem;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  color: #666;
-  border-bottom: 1px solid #ddd;
-  padding-bottom: 8px;
+  margin-top: 0;
+  font-size: 1rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: #666;
+  border-bottom: 1px solid #ddd;
+  padding-bottom: 8px;
 }
 
 .question {
-  font-size: 1.2rem;
-  margin: 20px 0;
-  font-weight: 700;
-  line-height: 1.4;
+  font-size: 1.2rem;
+  margin: 20px 0;
+  font-weight: 700;
+  line-height: 1.4;
 }
 
 .answer {
-  display: none;
-  background: #fff;
-  border-left: 4px solid #009D4E;
-  padding: 12px;
-  font-size: 1.1rem;
-  margin: 15px 0;
-  font-weight: bold;
+  display: none;
+  background: #fff;
+  border-left: 4px solid #009D4E;
+  padding: 12px;
+  font-size: 1.1rem;
+  margin: 15px 0;
+  font-weight: bold;
 }
 
 /* アクションボタン */
 .btn-row {
-  display: flex;
-  gap: 8px;
-  margin-top: 15px;
+  display: flex;
+  gap: 8px;
+  margin-top: 15px;
 }
 
 .action {
-  flex: 1;
-  border: 2px solid #1a1a1a;
-  border-radius: 2px;
-  padding: 12px 8px;
-  font-size: 0.9rem;
-  font-weight: 700;
-  cursor: pointer;
-  text-transform: uppercase;
+  flex: 1;
+  border: 2px solid #1a1a1a;
+  border-radius: 2px;
+  padding: 12px 8px;
+  font-size: 0.9rem;
+  font-weight: 700;
+  cursor: pointer;
+  text-transform: uppercase;
 }
 
 .reveal { background: #fff; color: #1a1a1a; }
@@ -320,207 +319,207 @@ header p {
 .close-btn { background: #1a1a1a; color: #fff; width: 100%; margin-top: 12px; }
 
 .reset-container {
-  text-align: center;
-  margin-top: 30px;
-  border-top: 1px solid #ddd;
-  padding-top: 20px;
+  text-align: center;
+  margin-top: 30px;
+  border-top: 1px solid #ddd;
+  padding-top: 20px;
 }
 
 .reset {
-  background: transparent;
-  color: #666;
-  border: 2px solid #ccc;
-  border-radius: 2px;
-  padding: 8px 16px;
-  font-size: 0.8rem;
-  font-weight: 600;
-  cursor: pointer;
+  background: transparent;
+  color: #666;
+  border: 2px solid #ccc;
+  border-radius: 2px;
+  padding: 8px 16px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
 }
-  /* ルーム作成エリア */
+  /* ルーム作成エリア */
 .room-box {
-  background: #fff;
-  border: 2px solid #1a1a1a;
-  padding: 15px;
-  margin-bottom: 20px;
-  text-align: center;
+  background: #fff;
+  border: 2px solid #1a1a1a;
+  padding: 15px;
+  margin-bottom: 20px;
+  text-align: center;
 }
 
 .room-title {
-  font-size: 0.85rem;
-  font-weight: 800;
-  letter-spacing: 0.1em;
-  margin-bottom: 10px;
+  font-size: 0.85rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  margin-bottom: 10px;
 }
 
 .room-button {
-  width: 100%;
-  background: #009D4E;
-  color: #fff;
-  border: 2px solid #1a1a1a;
-  padding: 13px;
-  font-size: 1rem;
-  font-weight: 800;
-  cursor: pointer;
+  width: 100%;
+  background: #009D4E;
+  color: #fff;
+  border: 2px solid #1a1a1a;
+  padding: 13px;
+  font-size: 1rem;
+  font-weight: 800;
+  cursor: pointer;
 }
 
 .room-button:disabled {
-  opacity: 0.6;
-  cursor: default;
+  opacity: 0.6;
+  cursor: default;
 }
 
 .room-info {
-  margin-top: 12px;
-  font-size: 0.9rem;
-  font-weight: 700;
-  overflow-wrap: anywhere;
+  margin-top: 12px;
+  font-size: 0.9rem;
+  font-weight: 700;
+  overflow-wrap: anywhere;
 }
 </style>
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 
 <body>
 
 <div class="container">
-  <header>
-    <h1>
-      <img src="titlelogo_black_nyan.png" alt="KNOW.">
-    </h1>
-    <p>I KNOW. DO YOU?</p>
-  </header>
+  <header>
+    <h1>
+      <img src="titlelogo_black_nyan.png" alt="KNOW.">
+    </h1>
+    <p>I KNOW. DO YOU?</p>
+  </header>
 
-  <div class="panel-body">
- <!-- ランキングスコアボード -->
+  <div class="panel-body">
+ <!-- ランキングスコアボード -->
 <div class="leaderboard">
-  <div class="leaderboard-header">
-    <span>KNOW.</span>
-    <span>RANKING</span>
-  </div>
+  <div class="leaderboard-header">
+    <span>KNOW.</span>
+    <span>RANKING</span>
+  </div>
 
-  <div class="leaderboard-columns">
-    <span>RANK</span>
-    <span>PLAYER</span>
-    <span>SCORE</span>
-  </div>
+  <div class="leaderboard-columns">
+    <span>RANK</span>
+    <span>PLAYER</span>
+    <span>SCORE</span>
+  </div>
 
-  <div id="rankingList" class="ranking-list">
-    <div class="ranking-empty">
-      参加者の入室を待っています
-    </div>
-  </div>
+  <div id="rankingList" class="ranking-list">
+    <div class="ranking-empty">
+      参加者の入室を待っています
+    </div>
+  </div>
 </div>
 
 <!-- 以前の得点表示用。今のゲーム処理との互換性のため残す -->
 <strong id="score" hidden>0</strong>
 
-    <!-- ルーム作成エリア -->
+    <!-- ルーム作成エリア -->
 <div class="room-box">
-  <div class="room-title">HOST ROOM</div>
+  <div class="room-title">HOST ROOM</div>
 
-  <button
-    class="room-button"
-    id="createRoomButton"
-    onclick="createRoom()"
-  >
-    ルームを作成
-  </button>
+  <button
+    class="room-button"
+    id="createRoomButton"
+    onclick="createRoom()"
+  >
+    ルームを作成
+  </button>
 
-  <div class="room-info" id="roomInfo">
-    まだルームは作成されていません
-  </div>
+  <div class="room-info" id="roomInfo">
+    まだルームは作成されていません
+  </div>
 </div>
-    
-    <!-- CONTENTSの大見出し -->
-    <div class="content-divider">
-      <span class="content-badge">CONTENTS</span>
-    </div>
+    
+    <!-- CONTENTSの大見出し -->
+    <div class="content-divider">
+      <span class="content-badge">CONTENTS</span>
+    </div>
 
-    <div class="board-group">
-      <div class="section-title">（  文学  ）</div>
-      <div class="board" id="language"></div>
-    </div>
+    <div class="board-group">
+      <div class="section-title">（  文学  ）</div>
+      <div class="board" id="language"></div>
+    </div>
 
-    <div class="board-group">
-      <div class="section-title">（  雑学  ）</div>
-      <div class="board" id="trivia"></div>
-    </div>
+    <div class="board-group">
+      <div class="section-title">（  雑学  ）</div>
+      <div class="board" id="trivia"></div>
+    </div>
 
-    <div class="board-group">
-      <div class="section-title">（  文化・芸術  ）</div>
-      <div class="board" id="culture"></div>
-    </div>
+    <div class="board-group">
+      <div class="section-title">（  文化・芸術  ）</div>
+      <div class="board" id="culture"></div>
+    </div>
 
-    <div class="board-group">
-      <div class="section-title">（  アニメ  ）</div>
-      <div class="board" id="anime"></div>
-    </div>
+    <div class="board-group">
+      <div class="section-title">（  アニメ  ）</div>
+      <div class="board" id="anime"></div>
+    </div>
 
-    <div class="board-group">
-      <div class="section-title">（  ネットスラング  ）</div>
-      <div class="board" id="net"></div>
-    </div>
-    
-    <div class="reset-container">
-      <button class="reset" onclick="resetGame()">RESET</button>
-    </div>
-  </div>
+    <div class="board-group">
+      <div class="section-title">（  ネットスラング  ）</div>
+      <div class="board" id="net"></div>
+    </div>
+    
+    <div class="reset-container">
+      <button class="reset" onclick="resetGame()">RESET</button>
+    </div>
+  </div>
 </div>
 
 <!-- モーダルウィンドウ -->
 <div class="modal" id="modal">
-  <div class="modal-content">
-    <h2 id="questionTitle">QUESTION</h2>
-    <div class="question" id="question"></div>
+  <div class="modal-content">
+    <h2 id="questionTitle">QUESTION</h2>
+    <div class="question" id="question"></div>
 
-    <button class="action reveal" onclick="showAnswer()" style="width:100%;">
-      答え
-    </button>
+    <button class="action reveal" onclick="showAnswer()" style="width:100%;">
+      答え
+    </button>
 
-    <div class="answer" id="answer"></div>
+    <div class="answer" id="answer"></div>
 
-    <div id="judge" style="display:none">
-      <div class="btn-row">
-        <button class="action correct" onclick="judge(true)">正解！ (+Pts)</button>
-        <button class="action wrong" onclick="judge(false)">不正解</button>
-      </div>
-    </div>
+    <div id="judge" style="display:none">
+      <div class="btn-row">
+        <button class="action correct" onclick="judge(true)">正解！ (+Pts)</button>
+        <button class="action wrong" onclick="judge(false)">不正解</button>
+      </div>
+    </div>
 
-    <button class="action close-btn" onclick="closeModal()">
-      CLOSE
-    </button>
-  </div>
+    <button class="action close-btn" onclick="closeModal()">
+      CLOSE
+    </button>
+  </div>
 </div>
 
 <script>
-  // Supabase接続設定
+  // Supabase接続設定
 const SUPABASE_URL = "https://jdzrpditjbcnbavpadjp.supabase.co";
 const SUPABASE_KEY = "sb_publishable_9GfTenwqD00b3hU4aBm3Mg_T2t8R6hC";
 
 const supabaseClient = window.supabase.createClient(
-  SUPABASE_URL,
-  SUPABASE_KEY
+  SUPABASE_URL,
+  SUPABASE_KEY
 );
 
 // 匿名ログイン
 async function connectSupabase() {
-  const { data: sessionData, error: sessionError } =
-    await supabaseClient.auth.getSession();
+  const { data: sessionData, error: sessionError } =
+    await supabaseClient.auth.getSession();
 
-  if (sessionError) {
-    console.error(sessionError);
-    return;
-  }
+  if (sessionError) {
+    console.error(sessionError);
+    return;
+  }
 
-  if (!sessionData.session) {
-    const { error } =
-      await supabaseClient.auth.signInAnonymously();
+  if (!sessionData.session) {
+    const { error } =
+      await supabaseClient.auth.signInAnonymously();
 
-    if (error) {
-      console.error(error);
-      return;
-    }
-  }
+    if (error) {
+      console.error(error);
+      return;
+    }
+  }
 
-  console.log("Supabase接続準備OK！");
+  console.log("Supabase接続準備OK！");
 }
 
 const supabaseReady = connectSupabase();
@@ -534,172 +533,174 @@ let rankingChannel = null;
 
 // 参加者のランキングを取得
 async function loadPlayers() {
-  if (!currentRoomId) return;
+  if (!currentRoomId) return;
 
-  const { data, error } = await supabaseClient
-    .from("players")
-    .select("id, nickname, score")
-    .eq("room_id", currentRoomId)
-    .order("score", { ascending: false });
+  const { data, error } = await supabaseClient
+    .from("players")
+    .select("id, nickname, score")
+    .eq("room_id", currentRoomId)
+    .order("score", { ascending: false });
 
-  if (error) {
-    console.error("ランキング取得エラー:", error);
-    return;
-  }
+  if (error) {
+    console.error("ランキング取得エラー:", error);
+    return;
+  }
 
-  const rankingList = document.getElementById("rankingList");
-  rankingList.innerHTML = "";
+  const rankingList = document.getElementById("rankingList");
+  rankingList.innerHTML = "";
 
-  if (!data || data.length === 0) {
-    rankingList.innerHTML =
-      '<div class="ranking-empty">参加者の入室を待っています</div>';
-    return;
-  }
+  if (!data || data.length === 0) {
+    rankingList.innerHTML =
+      '<div class="ranking-empty">参加者の入室を待っています</div>';
+    return;
+  }
 
-  let previousScore = null;
-  let previousRank = 0;
+  let previousScore = null;
+  let previousRank = 0;
 
-  data.forEach((player, index) => {
-    const rank =
-      player.score === previousScore ? previousRank : index + 1;
+  data.forEach((player, index) => {
+    const rank =
+      player.score === previousScore ? previousRank : index + 1;
 
-    previousScore = player.score;
-    previousRank = rank;
+    previousScore = player.score;
+    previousRank = rank;
 
-    const row = document.createElement("div");
-    row.className = "ranking-row";
+    const row = document.createElement("div");
+    row.className = "ranking-row";
 
-    const rankElement = document.createElement("span");
-    rankElement.className = "ranking-number";
-    rankElement.textContent = String(rank).padStart(2, "0");
+    const rankElement = document.createElement("span");
+    rankElement.className = "ranking-number";
+    rankElement.textContent = String(rank).padStart(2, "0");
 
-    const nameElement = document.createElement("span");
-    nameElement.className = "ranking-name";
-    nameElement.textContent = player.nickname;
+    const nameElement = document.createElement("span");
+    nameElement.className = "ranking-name";
+    nameElement.textContent = player.nickname;
 
-    const scoreElement = document.createElement("span");
-    scoreElement.className = "ranking-score";
-    scoreElement.textContent = player.score + " pt";
+    const scoreElement = document.createElement("span");
+    scoreElement.className = "ranking-score";
+    scoreElement.textContent = player.score + " pt";
 
-    row.appendChild(rankElement);
-    row.appendChild(nameElement);
-    row.appendChild(scoreElement);
+    row.appendChild(rankElement);
+    row.appendChild(nameElement);
+    row.appendChild(scoreElement);
 
-    rankingList.appendChild(row);
-  });
+    rankingList.appendChild(row);
+  });
 }
 
 // 参加者の入室・得点変更を監視
 function startScoreboard() {
-  if (!currentRoomId) return;
+  if (!currentRoomId) return;
 
-  if (rankingChannel) {
-    supabaseClient.removeChannel(rankingChannel);
-  }
+  if (rankingChannel) {
+    supabaseClient.removeChannel(rankingChannel);
+  }
 
-  loadPlayers();
+  loadPlayers();
 
-  rankingChannel = supabaseClient
-    .channel("ranking-" + currentRoomId)
-    .on(
-      "postgres_changes",
-      {
-        event: "*",
-        schema: "public",
-        table: "players",
-        filter: "room_id=eq." + currentRoomId
-      },
-      () => {
-        loadPlayers();
-      }
-    )
-    .subscribe();
+  rankingChannel = supabaseClient
+    .channel("ranking-" + currentRoomId)
+    .on(
+      "postgres_changes",
+      {
+        event: "*",
+        schema: "public",
+        table: "players",
+        filter: "room_id=eq." + currentRoomId
+      },
+      () => {
+        loadPlayers();
+      }
+    )
+    .subscribe();
 }
 
 // ルーム作成
 async function createRoom() {
-  const button = document.getElementById("createRoomButton");
-  const info = document.getElementById("roomInfo");
+  const button = document.getElementById("createRoomButton");
+  const info = document.getElementById("roomInfo");
+  
+  if (!button || !info) {
+    console.error("要素が見つかりません");
+    return;
+  }
 
-  if (!button || !info) {
-    console.error("要素が見つかりません");
-    return;
-  }
+  button.disabled = true;
+  button.textContent = "作成中...";
+  info.textContent = "接続しています...";
 
-  button.disabled = true;
-  button.textContent = "作成中...";
-  info.textContent = "接続しています...";
+  try {
+    // Supabaseへの接続完了を待つ
+    await supabaseReady;
 
-  try {
-    await supabaseReady;
+    // ルームを作成
+    const { data, error } =
+      await supabaseClient.rpc("host_create_room");
 
-    // 6桁コードでルームを作成
-    const { data, error } =
-      await supabaseClient.rpc("host_create_room_with_code");
+    if (error) throw error;
 
-    if (error) throw error;
+    // ルーム情報を取り出す
+    const room = Array.isArray(data) ? data[0] : data;
 
-    const room = Array.isArray(data) ? data[0] : data;
+    if (!room || !room.created_room_key) {
+      throw new Error("ルーム情報を取得できませんでした");
+    }
 
-    if (!room || !room.created_room_code) {
-      throw new Error("ルーム情報を取得できませんでした");
-    }
+    currentRoomId = room.created_room_id;
+    currentRoomKey = room.created_room_key;
 
-    currentRoomId = room.created_room_id;
-    currentRoomKey = room.created_room_code;
+startScoreboard();
 
-    startScoreboard();
+    // 参加コードを表示
+    info.textContent = "参加コード：" + currentRoomKey;
+    button.textContent = "ルーム作成済み";
 
-    // 6桁の参加コードを表示
-    info.textContent = "参加コード：" + currentRoomKey;
-    button.textContent = "ルーム作成済み";
+    console.log("ルーム作成成功！", room);
 
-    console.log("ルーム作成成功！", room);
+  } catch (error) {
+    console.error("ルーム作成エラー:", error);
 
-  } catch (error) {
-    console.error("ルーム作成エラー:", error);
-
-    info.textContent = "エラー：" + (error.message || JSON.stringify(error));
-    button.disabled = false;
-    button.textContent = "ルームを作成";
-  }
+    info.textContent = "エラー：" + (error.message || JSON.stringify(error));
+    button.disabled = false;
+    button.textContent = "ルームを作成";
+  }
 }
 const questions = {
-  language: [
-    { point: 10, q: "いちもんめ", a: "こたえ" },
-    { point: 20, q: "にもんめ", a: "こたえ" },
-    { point: 30, q: "さんもんめ", a: "こたえ" },
-    { point: 40, q: "よんもんめ", a: "（答え）" },
-    { point: 50, q: "（5問目の問題）", a: "（答え）" }
-  ],
-  trivia: [
-    { point: 10, q: "いちもんめ", a: "こたえ" },
-    { point: 20, q: "語源はポルトガル語の「コンフェイト」で、戦国時代に日本へ伝わった、星のような形の砂糖菓子は何？", a: "金平糖" },
-    { point: 30, q: "さんもんめ", a: "こたえ" },
-    { point: 40, q: "よんもんめ", a: "こたえ" },
-    { point: 50, q: "「カレーは飲み物」という名言を残したプロレスラーは誰？", a: "（ウガンダ・トラ）" }
-  ],
-  culture: [
-    { point: 10, q: "いちもんめ", a: "こたえ" },
-    { point: 20, q: "にもんめ", a: "答え" },
-    { point: 30, q: "57577で構成される和歌や短歌のことをその文字数からなんと呼ぶ？", a: "三十一文字(みそひともじ)" },
-    { point: 40, q: "（4問目の問題）", a: "（答え）" },
-    { point: 50, q: "（5問目の問題）", a: "（答え）" }
-  ],
-  anime: [
-    { point: 10, q: "いちもんめ", a: "こたえ" },
-    { point: 20, q: "にもんめ", a: "こたえ" },
-    { point: 30, q: "さんもんめ", a: "こたえ" },
-    { point: 40, q: "（4問目の問題）", a: "（答え）" },
-    { point: 50, q: "（5問目の問題）", a: "（答え）" }
-  ],
-  net: [
-    { point: 10, q: "いちもんめ", a: "こたえ" },
-    { point: 20, q: "にもんめ", a: "こたえ" },
-    { point: 30, q: "さんもんめ", a: "こたえ" },
-    { point: 40, q: "（4問目の問題）", a: "（答え）" },
-    { point: 50, q: "（5問目の問題）", a: "（答え）" }
-  ],
+  language: [
+    { point: 10, q: "いちもんめ", a: "こたえ" },
+    { point: 20, q: "にもんめ", a: "こたえ" },
+    { point: 30, q: "さんもんめ", a: "こたえ" },
+    { point: 40, q: "よんもんめ", a: "（答え）" },
+    { point: 50, q: "（5問目の問題）", a: "（答え）" }
+  ],
+  trivia: [
+    { point: 10, q: "いちもんめ", a: "こたえ" },
+    { point: 20, q: "語源はポルトガル語の「コンフェイト」で、戦国時代に日本へ伝わった、星のような形の砂糖菓子は何？", a: "金平糖" },
+    { point: 30, q: "さんもんめ", a: "こたえ" },
+    { point: 40, q: "よんもんめ", a: "こたえ" },
+    { point: 50, q: "「カレーは飲み物」という名言を残したプロレスラーは誰？", a: "（ウガンダ・トラ）" }
+  ],
+  culture: [
+    { point: 10, q: "いちもんめ", a: "こたえ" },
+    { point: 20, q: "にもんめ", a: "答え" },
+    { point: 30, q: "57577で構成される和歌や短歌のことをその文字数からなんと呼ぶ？", a: "三十一文字(みそひともじ)" },
+    { point: 40, q: "（4問目の問題）", a: "（答え）" },
+    { point: 50, q: "（5問目の問題）", a: "（答え）" }
+  ],
+  anime: [
+    { point: 10, q: "いちもんめ", a: "こたえ" },
+    { point: 20, q: "にもんめ", a: "こたえ" },
+    { point: 30, q: "さんもんめ", a: "こたえ" },
+    { point: 40, q: "（4問目の問題）", a: "（答え）" },
+    { point: 50, q: "（5問目の問題）", a: "（答え）" }
+  ],
+  net: [
+    { point: 10, q: "いちもんめ", a: "こたえ" },
+    { point: 20, q: "にもんめ", a: "こたえ" },
+    { point: 30, q: "さんもんめ", a: "こたえ" },
+    { point: 40, q: "（4問目の問題）", a: "（答え）" },
+    { point: 50, q: "（5問目の問題）", a: "（答え）" }
+  ],
 };
 
 let score = 0;
@@ -707,88 +708,89 @@ let currentQuestion = null;
 let currentTile = null;
 
 function createBoard() {
-  for (const category in questions) {
-    const board = document.getElementById(category);
-    if (!board) continue;
-    board.innerHTML = "";
+  for (const category in questions) {
+    const board = document.getElementById(category);
+    if (!board) continue;
+    board.innerHTML = "";
 
-    questions[category].forEach((item) => {
-      const button = document.createElement("button");
-      button.className = "tile";
-      
-      button.textContent = item.point;
-      
-      button.onclick = () => {
-        openQuestion(item, button);
-      };
-      board.appendChild(button);
-    });
-  }
+    questions[category].forEach((item) => {
+      const button = document.createElement("button");
+      button.className = "tile";
+      
+      button.textContent = item.point;
+      
+      button.onclick = () => {
+        openQuestion(item, button);
+      };
+      board.appendChild(button);
+    });
+  }
 }
 
 async function openQuestion(item, tile) {
-  currentQuestion = item;
-  currentTile = tile;
+  currentQuestion = item;
+  currentTile = tile;
 
-  document.getElementById("questionTitle").textContent = item.point + " POINTS";
-  document.getElementById("question").textContent = item.q;
-  document.getElementById("answer").textContent = "正解：" + item.a;
-  document.getElementById("answer").style.display = "none";
-  document.getElementById("judge").style.display = "none";
-  document.getElementById("modal").style.display = "flex";
+  document.getElementById("questionTitle").textContent = item.point + " POINTS";
+  document.getElementById("question").textContent = item.q;
+  document.getElementById("answer").textContent = "正解：" + item.a;
+  document.getElementById("answer").style.display = "none";
+  document.getElementById("judge").style.display = "none";
+  document.getElementById("modal").style.display = "flex";
 
-  // ルームが作成されていなければ保存しない
-  if (!currentRoomId) return;
+  // ルームが作成されていなければ保存しない
+  if (!currentRoomId) return;
 
-  // 問題情報をSupabaseに保存
-  const { error } = await supabaseClient
-    .from("rooms")
-    .update({
-      current_question_text: item.q,
-      current_question_category: Object.keys(questions).find(
-        category => questions[category].includes(item)
-      ),
-      current_points: item.point,
-      question_status: "waiting",
-      buzz_open: false
-    })
-    .eq("id", currentRoomId);
+  // 問題情報をSupabaseに保存
+  const { error } = await supabaseClient
+    .from("rooms")
+    .update({
+      current_question_text: item.q,
+      current_question_category: Object.keys(questions).find(
+        category => questions[category].includes(item)
+      ),
+      current_points: item.point,
+      question_status: "waiting",
+      buzz_open: false
+    })
+    .eq("id", currentRoomId);
 
-  if (error) {
-    console.error("問題情報の保存エラー:", error);
-    alert("問題情報を保存できませんでした。");
-  }
+  if (error) {
+    console.error("問題情報の保存エラー:", error);
+    alert("問題情報を保存できませんでした。");
+  }
 }
 
 function showAnswer() {
-  document.getElementById("answer").style.display = "block";
-  document.getElementById("judge").style.display = "block";
+  document.getElementById("answer").style.display = "block";
+  document.getElementById("judge").style.display = "block";
 }
 
 function judge(isCorrect) {
-  if (isCorrect) {
-    score += currentQuestion.point;
-  }
-  document.getElementById("score").textContent = score;
-  currentTile.disabled = true;
-  currentTile.textContent = "USED";
-  closeModal();
+  if (isCorrect) {
+    score += currentQuestion.point;
+  }
+  document.getElementById("score").textContent = score;
+  currentTile.disabled = true;
+  currentTile.textContent = "USED";
+  closeModal();
 }
 
 function closeModal() {
-  document.getElementById("modal").style.display = "none";
+  document.getElementById("modal").style.display = "none";
 }
 
 function resetGame() {
-  if (!confirm("最初からやりなおしますか？")) {
-    return;
-  }
-  score = 0;
-  document.getElementById("score").textContent = score;
-  createBoard();
+  if (!confirm("最初からやりなおしますか？")) {
+    return;
+  }
+  score = 0;
+  document.getElementById("score").textContent = score;
+  createBoard();
 }
 
 createBoard();
 </script>
+
 </body>
 </html>
