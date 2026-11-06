@@ -258,7 +258,46 @@ header p {
   font-weight: 600;
   cursor: pointer;
 }
+  /* ルーム作成エリア */
+.room-box {
+  background: #fff;
+  border: 2px solid #1a1a1a;
+  padding: 15px;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.room-title {
+  font-size: 0.85rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  margin-bottom: 10px;
+}
+
+.room-button {
+  width: 100%;
+  background: #009D4E;
+  color: #fff;
+  border: 2px solid #1a1a1a;
+  padding: 13px;
+  font-size: 1rem;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.room-button:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
+.room-info {
+  margin-top: 12px;
+  font-size: 0.9rem;
+  font-weight: 700;
+  overflow-wrap: anywhere;
+}
 </style>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 
 <body>
@@ -277,6 +316,23 @@ header p {
       <div><strong id="score">0</strong> <small style="font-size: 0.9rem; color:#aaa;">pts</small></div>
     </div>
 
+    <!-- ルーム作成エリア -->
+<div class="room-box">
+  <div class="room-title">HOST ROOM</div>
+
+  <button
+    class="room-button"
+    id="createRoomButton"
+    onclick="createRoom()"
+  >
+    ルームを作成
+  </button>
+
+  <div class="room-info" id="roomInfo">
+    まだルームは作成されていません
+  </div>
+</div>
+    
     <!-- CONTENTSの大見出し -->
     <div class="content-divider">
       <span class="content-badge">CONTENTS</span>
@@ -339,6 +395,92 @@ header p {
 </div>
 
 <script>
+  // Supabase接続設定
+const SUPABASE_URL = "https://jdzrpditjbcnbavpadjp.supabase.co";
+const SUPABASE_KEY = "sb_publishable_9GfTenwqD00b3hU4aBm3Mg_T2t8R6hC";
+
+const supabaseClient = window.supabase.createClient(
+  SUPABASE_URL,
+  SUPABASE_KEY
+);
+
+// 匿名ログイン
+async function connectSupabase() {
+  const { data: sessionData, error: sessionError } =
+    await supabaseClient.auth.getSession();
+
+  if (sessionError) {
+    console.error(sessionError);
+    return;
+  }
+
+  if (!sessionData.session) {
+    const { error } =
+      await supabaseClient.auth.signInAnonymously();
+
+    if (error) {
+      console.error(error);
+      return;
+    }
+  }
+
+  console.log("Supabase接続準備OK！");
+}
+
+const supabaseReady = connectSupabase();
+
+// 現在のルーム情報
+let currentRoomId = null;
+let currentRoomKey = null;
+
+// ルーム作成
+async function createRoom() {
+  const button = document.getElementById("createRoomButton");
+  const info = document.getElementById("roomInfo");
+  
+  if (!button || !info) {
+    console.error("要素が見つかりません");
+    return;
+  }
+
+  button.disabled = true;
+  button.textContent = "作成中...";
+  info.textContent = "接続しています...";
+
+  try {
+    // Supabaseへの接続完了を待つ
+    await supabaseReady;
+
+    // ルームを作成
+    const { data, error } =
+      await supabaseClient.rpc("host_create_room");
+
+    if (error) throw error;
+
+    // ルーム情報を取り出す
+    const room = Array.isArray(data) ? data[0] : data;
+
+    if (!room || !room.created_room_key) {
+      throw new Error("ルーム情報を取得できませんでした");
+    }
+
+    currentRoomId = room.created_room_id;
+    currentRoomKey = room.created_room_key;
+
+    // 参加コードを表示
+    info.textContent = "参加コード：" + currentRoomKey;
+    button.textContent = "ルーム作成済み";
+
+    console.log("ルーム作成成功！", room);
+
+  } catch (error) {
+    console.error("ルーム作成エラー:", error);
+
+    info.textContent = "エラー：" + (error.message || JSON.stringify(error));
+    button.disabled = false;
+    button.textContent = "ルームを作成";
+  }
+}
 const questions = {
   language: [
     { point: 10, q: "いちもんめ", a: "こたえ" },
