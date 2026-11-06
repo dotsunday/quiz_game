@@ -477,7 +477,7 @@ function updateQuestionScreen(room) {
 
   waitingMessage.style.display = "block";
   answerArea.style.display = "none";
-  buzzerButton.disabled = true;
+  buzzerButton.disabled = !(room.question_status === "active" && room.buzz_open);
 }
 
 // 入室処理
