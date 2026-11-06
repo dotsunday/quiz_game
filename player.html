@@ -463,8 +463,8 @@ async function joinGame() {
   const playerName = document.getElementById("playerName").value.trim();
   const roomCode = document.getElementById("roomCode").value.trim();
 
-  if (!roomCode) {
-    alert("参加コードを入力してください。");
+  if (!/^\d{6}$/.test(roomCode)) {
+    alert("参加コードは数字6桁で入力してください。");
     return;
   }
 
@@ -478,7 +478,6 @@ async function joinGame() {
   button.textContent = "JOINING...";
 
   try {
-    // 匿名ログイン
     const { data: sessionData, error: sessionError } =
       await supabaseClient.auth.getSession();
 
@@ -491,22 +490,23 @@ async function joinGame() {
       if (error) throw error;
     }
 
-    // 参加コードを使ってルームに入室
+    // 6桁コードでルームに入室
     const { data, error } = await supabaseClient.rpc(
-      "join_room",
+      "join_room_with_code",
       {
-        p_room_key: roomCode,
+        p_room_code: roomCode,
         p_nickname: playerName
       }
     );
 
     if (error) throw error;
 
-    // 入室成功
     document.getElementById("displayName").textContent = playerName;
     document.getElementById("joinScreen").style.display = "none";
     document.getElementById("gameScreen").style.display = "block";
-watchRoom(roomCode);
+
+    // 入室したルームの情報を監視
+    watchRoom(roomCode);
 
     console.log("入室成功！", data);
 
