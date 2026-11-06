@@ -318,11 +318,7 @@ footer {
 
     <!-- ゲーム画面 -->
     <section id="gameScreen">
-<div class="room-reset-area">
-  <button type="button" onclick="resetRoom()" class="room-reset-button">
-    別のルームに参加する
-  </button>
-</div>
+
       <div class="content-divider">
         <span class="content-badge">PLAYER ROOM</span>
       </div>
@@ -371,6 +367,11 @@ footer {
         司会者との連動機能はこれから追加します。
       </p>
 
+<div class="room-reset-area">
+  <button type="button" onclick="resetRoom()" class="room-reset-button">
+    別のルームに参加する
+  </button>
+</div>
     </section>
 
   </main>
@@ -470,8 +471,7 @@ function updateQuestionScreen(room) {
   const category =
     categoryNames[room.current_question_category] || "QUESTION";
 
-  questionCategory.textContent =
-    category + " / " + room.current_points + " POINTS";
+  questionCategory.textContent = category;
 
   questionText.textContent = room.current_question_text;
 
