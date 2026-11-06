@@ -527,6 +527,64 @@ const supabaseReady = connectSupabase();
 // 現在のルーム情報
 let currentRoomId = null;
 let currentRoomKey = null;
+// 保存されたルーム情報を復元
+async function restoreHostRoom() {
+  const savedRoomId = localStorage.getItem("know_host_room_id");
+  const savedRoomCode = localStorage.getItem("know_host_room_code");
+
+  // 保存情報がなければ何もしない
+  if (!savedRoomId || !savedRoomCode) {
+    return;
+  }
+
+  try {
+    await supabaseReady;
+
+    // ログイン状態を確認
+    const { data: sessionData, error: sessionError } =
+      await supabaseClient.auth.getSession();
+
+    if (sessionError) throw sessionError;
+
+    if (!sessionData.session) {
+      console.log("司会者のログイン情報がありません");
+      return;
+    }
+
+    // 自分が作ったルームか確認
+    const { data: room, error } = await supabaseClient
+      .from("rooms")
+      .select("id, room_code")
+      .eq("id", savedRoomId)
+      .single();
+
+    if (error) throw error;
+
+    if (!room || room.room_code !== savedRoomCode) {
+      throw new Error("保存されたルーム情報と一致しません");
+    }
+
+    // ルーム情報を復元
+    currentRoomId = room.id;
+    currentRoomKey = room.room_code;
+
+    // 参加コードを画面に表示
+    document.getElementById("roomInfo").textContent =
+      "参加コード：" + currentRoomKey;
+
+    const button = document.getElementById("createRoomButton");
+    button.textContent = "ルーム作成済み";
+    button.disabled = true;
+
+    // スコアボードを再開
+    startScoreboard();
+
+    console.log("司会者のルーム復元に成功しました！");
+
+  } catch (error) {
+    console.error("司会者のルーム復元エラー:", error);
+  }
+}
 
 // ランキング更新用
 let rankingChannel = null;
@@ -648,7 +706,9 @@ async function createRoom() {
 
     currentRoomId = room.created_room_id;
     currentRoomKey = room.created_room_code;
-
+// 司会者のルーム情報を保存
+localStorage.setItem("know_host_room_id", currentRoomId);
+localStorage.setItem("know_host_room_code", currentRoomKey);
     startScoreboard();
 
     // 6桁の参加コードを表示
@@ -806,6 +866,7 @@ function resetGame() {
 }
 
 createBoard();
+restoreHostRoom();
 </script>
 
 </body>
