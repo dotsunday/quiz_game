@@ -129,6 +129,74 @@ header p {
   font-family: monospace;
 }
 
+/* ランキングスコアボード */
+.leaderboard {
+  background: #1a1a1a;
+  color: #fff;
+  padding: 18px;
+  margin-bottom: 20px;
+  border: 2px solid #1a1a1a;
+}
+
+.leaderboard-header {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.8rem;
+  font-weight: 800;
+  letter-spacing: 0.18em;
+  color: #F18F50;
+  padding-bottom: 12px;
+  border-bottom: 1px solid #555;
+}
+
+.leaderboard-columns,
+.ranking-row {
+  display: grid;
+  grid-template-columns: 55px 1fr 85px;
+  align-items: center;
+  gap: 8px;
+}
+
+.leaderboard-columns {
+  padding: 12px 5px 8px;
+  color: #999;
+  font-size: 0.7rem;
+  letter-spacing: 0.1em;
+}
+
+.ranking-row {
+  padding: 13px 5px;
+  border-top: 1px solid #444;
+}
+
+.ranking-number {
+  color: #F18F50;
+  font-size: 1.1rem;
+  font-weight: 800;
+  font-family: monospace;
+}
+
+.ranking-name {
+  font-size: 0.95rem;
+  font-weight: 700;
+  overflow-wrap: anywhere;
+}
+
+.ranking-score {
+  text-align: right;
+  color: #fff;
+  font-size: 1.2rem;
+  font-weight: 800;
+  font-family: monospace;
+}
+
+.ranking-empty {
+  padding: 25px 5px;
+  text-align: center;
+  color: #aaa;
+  font-size: 0.85rem;
+}
+
 /* 問題ボードのグリッド */
 .board-group {
   margin-bottom: 25px;
@@ -311,10 +379,28 @@ header p {
   </header>
 
   <div class="panel-body">
-    <div class="score-box">
-      <span>SCORE</span>
-      <div><strong id="score">0</strong> <small style="font-size: 0.9rem; color:#aaa;">pts</small></div>
+ <!-- ランキングスコアボード -->
+<div class="leaderboard">
+  <div class="leaderboard-header">
+    <span>KNOW.</span>
+    <span>RANKING</span>
+  </div>
+
+  <div class="leaderboard-columns">
+    <span>RANK</span>
+    <span>PLAYER</span>
+    <span>SCORE</span>
+  </div>
+
+  <div id="rankingList" class="ranking-list">
+    <div class="ranking-empty">
+      参加者の入室を待っています
     </div>
+  </div>
+</div>
+
+<!-- 以前の得点表示用。今のゲーム処理との互換性のため残す -->
+<strong id="score" hidden>0</strong>
 
     <!-- ルーム作成エリア -->
 <div class="room-box">
@@ -433,6 +519,93 @@ const supabaseReady = connectSupabase();
 let currentRoomId = null;
 let currentRoomKey = null;
 
+// ランキング更新用
+let rankingChannel = null;
+
+// 参加者のランキングを取得
+async function loadPlayers() {
+  if (!currentRoomId) return;
+
+  const { data, error } = await supabaseClient
+    .from("players")
+    .select("id, nickname, score")
+    .eq("room_id", currentRoomId)
+    .order("score", { ascending: false });
+
+  if (error) {
+    console.error("ランキング取得エラー:", error);
+    return;
+  }
+
+  const rankingList = document.getElementById("rankingList");
+  rankingList.innerHTML = "";
+
+  if (!data || data.length === 0) {
+    rankingList.innerHTML =
+      '<div class="ranking-empty">参加者の入室を待っています</div>';
+    return;
+  }
+
+  let previousScore = null;
+  let previousRank = 0;
+
+  data.forEach((player, index) => {
+    const rank =
+      player.score === previousScore ? previousRank : index + 1;
+
+    previousScore = player.score;
+    previousRank = rank;
+
+    const row = document.createElement("div");
+    row.className = "ranking-row";
+
+    const rankElement = document.createElement("span");
+    rankElement.className = "ranking-number";
+    rankElement.textContent = String(rank).padStart(2, "0");
+
+    const nameElement = document.createElement("span");
+    nameElement.className = "ranking-name";
+    nameElement.textContent = player.nickname;
+
+    const scoreElement = document.createElement("span");
+    scoreElement.className = "ranking-score";
+    scoreElement.textContent = player.score + " pt";
+
+    row.appendChild(rankElement);
+    row.appendChild(nameElement);
+    row.appendChild(scoreElement);
+
+    rankingList.appendChild(row);
+  });
+}
+
+// 参加者の入室・得点変更を監視
+function startScoreboard() {
+  if (!currentRoomId) return;
+
+  if (rankingChannel) {
+    supabaseClient.removeChannel(rankingChannel);
+  }
+
+  loadPlayers();
+
+  rankingChannel = supabaseClient
+    .channel("ranking-" + currentRoomId)
+    .on(
+      "postgres_changes",
+      {
+        event: "*",
+        schema: "public",
+        table: "players",
+        filter: "room_id=eq." + currentRoomId
+      },
+      () => {
+        loadPlayers();
+      }
+    )
+    .subscribe();
+}
+
 // ルーム作成
 async function createRoom() {
   const button = document.getElementById("createRoomButton");
@@ -466,6 +639,8 @@ async function createRoom() {
 
     currentRoomId = room.created_room_id;
     currentRoomKey = room.created_room_key;
+
+startScoreboard();
 
     // 参加コードを表示
     info.textContent = "参加コード：" + currentRoomKey;
