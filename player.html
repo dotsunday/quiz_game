@@ -258,6 +258,23 @@ footer {
     padding: 15px;
   }
 }
+
+.room-reset-area {
+  display: flex;
+  justify-content: flex-end;
+  margin: 12px 0 20px;
+}
+
+.room-reset-button {
+  padding: 10px 16px;
+  border: 1px solid #1a1a1a;
+  border-radius: 4px;
+  background: #fff;
+  color: #1a1a1a;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+}
 </style>
 </head>
 
@@ -301,7 +318,11 @@ footer {
 
     <!-- ゲーム画面 -->
     <section id="gameScreen">
-
+<div class="room-reset-area">
+  <button type="button" onclick="resetRoom()" class="room-reset-button">
+    別のルームに参加する
+  </button>
+</div>
       <div class="content-divider">
         <span class="content-badge">PLAYER ROOM</span>
       </div>
@@ -504,8 +525,6 @@ async function joinGame() {
     document.getElementById("displayName").textContent = playerName;
     document.getElementById("joinScreen").style.display = "none";
     document.getElementById("gameScreen").style.display = "block";
-localStorage.setItem("know_room_code", roomCode);
-localStorage.setItem("know_player_name", playerName);
 
 // 入室情報を保存
 localStorage.setItem("know_room_code", roomCode);
@@ -577,6 +596,34 @@ async function restoreSession() {
   } catch (error) {
     console.error("復帰エラー:", error);
   }
+}
+
+// 別のルームに参加する
+function resetRoom() {
+  if (!confirm("今のルームから退出して、新しいルームに参加しますか？")) {
+    return;
+  }
+
+  // 保存した参加情報を削除
+  localStorage.removeItem("know_room_code");
+  localStorage.removeItem("know_player_name");
+
+  // ルームの監視を停止
+  if (playerRoomChannel) {
+    supabaseClient.removeChannel(playerRoomChannel);
+    playerRoomChannel = null;
+  }
+
+  // 参加情報をリセット
+  playerRoomId = null;
+
+  // 入力画面に戻す
+  document.getElementById("gameScreen").style.display = "none";
+  document.getElementById("joinScreen").style.display = "block";
+
+  // 入力欄を空にする
+  document.getElementById("roomCode").value = "";
+  document.getElementById("playerName").value = "";
 }
 
 // ページを開いたときに復帰処理を実行
