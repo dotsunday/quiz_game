@@ -435,6 +435,8 @@ let currentRoomKey = null;
 
 // ルーム作成
 async function createRoom() {
+  const button = document.getElementById("createRoomButton");
+const info = document.getElementById("roomInfo");
   
   button.disabled = true;
   button.textContent = "作成中...";
