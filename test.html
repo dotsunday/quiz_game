@@ -1021,6 +1021,39 @@ function showAnswer() {
   document.getElementById("judge").style.display = "block";
 }
 
+// 早押し受付を開始
+async function openBuzzer() {
+  if (!currentRoomId) {
+    alert("ルームIDが取得できていません！");
+    return;
+  }
+
+  await supabaseReady;
+
+  const { data, error } = await supabaseClient
+    .from("rooms")
+    .update({
+      question_status: "active",
+      buzz_open: true
+    })
+    .eq("id", currentRoomId)
+    .select();
+
+  if (error) {
+    console.error("早押し受付開始エラー:", error);
+    alert("早押し受付を開始できませんでした：" + error.message);
+    return;
+  }
+
+  if (!data || data.length === 0) {
+    alert("ルーム情報を更新できませんでした。");
+    return;
+  }
+
+  console.log("早押し受付を開始しました！");
+  loadBuzzList();
+}
+
 function judge(isCorrect) {
   if (isCorrect) {
     score += currentQuestion.point;
