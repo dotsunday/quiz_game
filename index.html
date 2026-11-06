@@ -32,7 +32,7 @@ body {
   border: 2px solid #1a1a1a;
 }
 
-/* ヘッダー：左端に画像ロゴ、右端にテキストサブタイトル */
+/* ヘッダー */
 header {
   display: flex;
   justify-content: space-between;
@@ -67,7 +67,7 @@ header p {
   padding: 20px;
 }
 
-/* 添付画像のピル型＋両サイドライン装飾（CONTENTS用） */
+/* CONTENTS見出し */
 .content-divider {
   display: flex;
   align-items: center;
@@ -199,14 +199,12 @@ header p {
 }
 
 /* 問題ボードのグリッド */
-/* ジャンルごとの問題ボード */
 .board-group {
   margin-bottom: 25px;
   padding-bottom: 25px;
   border-bottom: 2px dashed #999;
 }
 
-/* 最後のジャンルには区切り線をつけない */
 .board-group:last-child {
   border-bottom: none;
 }
@@ -217,7 +215,7 @@ header p {
   gap: 10px;
 }
 
-/* タイルデザイン（数字のみでスッキリと） */
+/* タイルデザイン */
 .tile {
   background: #fff;
   color: #1a1a1a;
@@ -335,7 +333,8 @@ header p {
   font-weight: 600;
   cursor: pointer;
 }
-  /* ルーム作成エリア */
+
+/* ルーム作成エリア */
 .room-box {
   background: #fff;
   border: 2px solid #1a1a1a;
@@ -374,7 +373,7 @@ header p {
   overflow-wrap: anywhere;
 }
 </style>
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 
 <body>
@@ -388,76 +387,72 @@ header p {
   </header>
 
   <div class="panel-body">
- <!-- ランキングスコアボード -->
-<div class="leaderboard">
-  <div class="leaderboard-header">
-    <span>KNOW.</span>
-    <span>RANKING</span>
-  </div>
+    <!-- ランキングスコアボード -->
+    <div class="leaderboard">
+      <div class="leaderboard-header">
+        <span>KNOW.</span>
+        <span>RANKING</span>
+      </div>
 
-  <div class="leaderboard-columns">
-    <span>RANK</span>
-    <span>PLAYER</span>
-    <span>SCORE</span>
-  </div>
+      <div class="leaderboard-columns">
+        <span>RANK</span>
+        <span>PLAYER</span>
+        <span>SCORE</span>
+      </div>
 
-  <div id="rankingList" class="ranking-list">
-    <div class="ranking-empty">
-      参加者の入室を待っています
+      <div id="rankingList" class="ranking-list">
+        <div class="ranking-empty">
+          参加者の入室を待っています
+        </div>
+      </div>
     </div>
-  </div>
-</div>
 
-<!-- 以前の得点表示用。今のゲーム処理との互換性のため残す -->
-<strong id="score" hidden>0</strong>
+    <!-- 得点表示用（互換性のために非表示で保持） -->
+    <strong id="score" hidden>0</strong>
 
     <!-- ルーム作成エリア -->
-<div class="room-box">
-  <div class="room-title">HOST ROOM</div>
+    <div class="room-box">
+      <div class="room-title">HOST ROOM</div>
 
-  <button
-    class="room-button"
-    id="createRoomButton"
-    onclick="createRoom()"
-  >
-    ルームを作成
-  </button>
+      <button class="room-button" id="createRoomButton" onclick="createRoom()">
+        ルームを作成
+      </button>
 
-  <div class="room-info" id="roomInfo">
-    まだルームは作成されていません
-  </div>
-</div>
-    
+      <div class="room-info" id="roomInfo">
+        まだルームは作成されていません
+      </div>
+    </div>
+      
     <!-- CONTENTSの大見出し -->
     <div class="content-divider">
       <span class="content-badge">CONTENTS</span>
     </div>
 
     <div class="board-group">
-      <div class="section-title">（  文学  ）</div>
+      <div class="section-title">（ 文学 ）</div>
       <div class="board" id="language"></div>
     </div>
 
     <div class="board-group">
-      <div class="section-title">（  雑学  ）</div>
+      <div class="section-title">（ 雑学 ）</div>
       <div class="board" id="trivia"></div>
     </div>
 
     <div class="board-group">
-      <div class="section-title">（  文化・芸術  ）</div>
+      <div class="section-title">（ 文化・芸術 ）</div>
       <div class="board" id="culture"></div>
     </div>
 
     <div class="board-group">
-      <div class="section-title">（  アニメ  ）</div>
+      <div class="section-title">（ アニメ ）</div>
       <div class="board" id="anime"></div>
     </div>
 
     <div class="board-group">
-      <div class="section-title">（  ネットスラング  ）</div>
+      <div class="section-title">（ ネットスラング ）</div>
       <div class="board" id="net"></div>
     </div>
-    
+      
     <div class="reset-container">
       <button class="reset" onclick="resetGame()">RESET</button>
     </div>
@@ -490,7 +485,7 @@ header p {
 </div>
 
 <script>
-  // Supabase接続設定
+// Supabase接続設定
 const SUPABASE_URL = "https://jdzrpditjbcnbavpadjp.supabase.co";
 const SUPABASE_KEY = "sb_publishable_9GfTenwqD00b3hU4aBm3Mg_T2t8R6hC";
 
@@ -510,8 +505,7 @@ async function connectSupabase() {
   }
 
   if (!sessionData.session) {
-    const { error } =
-      await supabaseClient.auth.signInAnonymously();
+    const { error } = await supabaseClient.auth.signInAnonymously();
 
     if (error) {
       console.error(error);
@@ -550,8 +544,7 @@ async function loadPlayers() {
   rankingList.innerHTML = "";
 
   if (!data || data.length === 0) {
-    rankingList.innerHTML =
-      '<div class="ranking-empty">参加者の入室を待っています</div>';
+    rankingList.innerHTML = '<div class="ranking-empty">参加者の入室を待っています</div>';
     return;
   }
 
@@ -559,8 +552,7 @@ async function loadPlayers() {
   let previousRank = 0;
 
   data.forEach((player, index) => {
-    const rank =
-      player.score === previousScore ? previousRank : index + 1;
+    const rank = player.score === previousScore ? previousRank : index + 1;
 
     previousScore = player.score;
     previousRank = rank;
@@ -633,8 +625,7 @@ async function createRoom() {
     await supabaseReady;
 
     // 6桁コードでルームを作成
-    const { data, error } =
-      await supabaseClient.rpc("host_create_room_with_code");
+    const { data, error } = await supabaseClient.rpc("host_create_room_with_code");
 
     if (error) throw error;
 
@@ -663,6 +654,7 @@ async function createRoom() {
     button.textContent = "ルームを作成";
   }
 }
+
 const questions = {
   language: [
     { point: 10, q: "いちもんめ", a: "こたえ" },
@@ -694,101 +686,4 @@ const questions = {
   ],
   net: [
     { point: 10, q: "いちもんめ", a: "こたえ" },
-    { point: 20, q: "にもんめ", a: "こたえ" },
-    { point: 30, q: "さんもんめ", a: "こたえ" },
-    { point: 40, q: "（4問目の問題）", a: "（答え）" },
-    { point: 50, q: "（5問目の問題）", a: "（答え）" }
-  ],
-};
-
-let score = 0;
-let currentQuestion = null;
-let currentTile = null;
-
-function createBoard() {
-  for (const category in questions) {
-    const board = document.getElementById(category);
-    if (!board) continue;
-    board.innerHTML = "";
-
-    questions[category].forEach((item) => {
-      const button = document.createElement("button");
-      button.className = "tile";
-      
-      button.textContent = item.point;
-      
-      button.onclick = () => {
-        openQuestion(item, button);
-      };
-      board.appendChild(button);
-    });
-  }
-}
-
-async function openQuestion(item, tile) {
-  currentQuestion = item;
-  currentTile = tile;
-
-  document.getElementById("questionTitle").textContent = item.point + " POINTS";
-  document.getElementById("question").textContent = item.q;
-  document.getElementById("answer").textContent = "正解：" + item.a;
-  document.getElementById("answer").style.display = "none";
-  document.getElementById("judge").style.display = "none";
-  document.getElementById("modal").style.display = "flex";
-
-  // ルームが作成されていなければ保存しない
-  if (!currentRoomId) return;
-
-  // 問題情報をSupabaseに保存
-  const { error } = await supabaseClient
-    .from("rooms")
-    .update({
-      current_question_text: item.q,
-      current_question_category: Object.keys(questions).find(
-        category => questions[category].includes(item)
-      ),
-      current_points: item.point,
-      question_status: "waiting",
-      buzz_open: false
-    })
-    .eq("id", currentRoomId);
-
-  if (error) {
-    console.error("問題情報の保存エラー:", error);
-    alert("問題情報を保存できませんでした。");
-  }
-}
-
-function showAnswer() {
-  document.getElementById("answer").style.display = "block";
-  document.getElementById("judge").style.display = "block";
-}
-
-function judge(isCorrect) {
-  if (isCorrect) {
-    score += currentQuestion.point;
-  }
-  document.getElementById("score").textContent = score;
-  currentTile.disabled = true;
-  currentTile.textContent = "USED";
-  closeModal();
-}
-
-function closeModal() {
-  document.getElementById("modal").style.display = "none";
-}
-
-function resetGame() {
-  if (!confirm("最初からやりなおしますか？")) {
-    return;
-  }
-  score = 0;
-  document.getElementById("score").textContent = score;
-  createBoard();
-}
-
-createBoard();
-</script>
-
-</body>
-</html>
+    { point: 20, q: "にもんめ", a
