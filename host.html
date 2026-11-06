@@ -619,7 +619,7 @@ function startScoreboard() {
 async function createRoom() {
   const button = document.getElementById("createRoomButton");
   const info = document.getElementById("roomInfo");
-  
+
   if (!button || !info) {
     console.error("要素が見つかりません");
     return;
@@ -630,28 +630,26 @@ async function createRoom() {
   info.textContent = "接続しています...";
 
   try {
-    // Supabaseへの接続完了を待つ
     await supabaseReady;
 
-    // ルームを作成
+    // 6桁コードでルームを作成
     const { data, error } =
-      await supabaseClient.rpc("host_create_room");
+      await supabaseClient.rpc("host_create_room_with_code");
 
     if (error) throw error;
 
-    // ルーム情報を取り出す
     const room = Array.isArray(data) ? data[0] : data;
 
-    if (!room || !room.created_room_key) {
+    if (!room || !room.created_room_code) {
       throw new Error("ルーム情報を取得できませんでした");
     }
 
     currentRoomId = room.created_room_id;
-    currentRoomKey = room.created_room_key;
+    currentRoomKey = room.created_room_code;
 
-startScoreboard();
+    startScoreboard();
 
-    // 参加コードを表示
+    // 6桁の参加コードを表示
     info.textContent = "参加コード：" + currentRoomKey;
     button.textContent = "ルーム作成済み";
 
