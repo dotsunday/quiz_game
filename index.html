@@ -140,15 +140,16 @@ header p {
   gap: 10px;
 }
 
-/* タイルデザイン */
+/* タイルデザイン（数字のみでスッキリと） */
 .tile {
   background: #fff;
   color: #1a1a1a;
   border: 2px solid #1a1a1a;
   border-radius: 2px;
-  padding: 18px 5px;
-  font-size: 1.1rem;
-  font-weight: 700;
+  padding: 16px 5px;
+  font-size: 1.2rem;
+  font-weight: 800;
+  font-family: monospace;
   cursor: pointer;
   transition: all 0.15s ease;
   text-align: center;
@@ -164,6 +165,8 @@ header p {
   color: #888;
   border-color: #ccc;
   cursor: default;
+  font-family: inherit;
+  font-size: 1.1rem;
 }
 
 /* モーダル */
@@ -271,24 +274,39 @@ header p {
   <div class="panel-body">
     <div class="score-box">
       <span>SCORE</span>
-      <div><strong id="score">0</strong> <small style="font-size: 0.9rem; color:#aaa;">PTS</small></div>
+      <div><strong id="score">0</strong> <small style="font-size: 0.9rem; color:#aaa;">pts</small></div>
     </div>
 
-    <!-- ここにCONTENTSの大見出し（画像風の装飾）を配置 -->
+    <!-- CONTENTSの大見出し -->
     <div class="content-divider">
       <span class="content-badge">CONTENTS</span>
     </div>
 
     <div class="board-group">
-      <div class="section-title">（ 雑学 ）</div>
+      <div class="section-title">（  文学  ）</div>
+      <div class="board" id="language"></div>
+    </div>
+
+    <div class="board-group">
+      <div class="section-title">（  雑学  ）</div>
       <div class="board" id="trivia"></div>
     </div>
 
     <div class="board-group">
-      <div class="section-title">（ 一般常識 ）</div>
-      <div class="board" id="general"></div>
+      <div class="section-title">（  文化・芸術  ）</div>
+      <div class="board" id="culture"></div>
     </div>
 
+    <div class="board-group">
+      <div class="section-title">（  アニメ  ）</div>
+      <div class="board" id="anime"></div>
+    </div>
+
+    <div class="board-group">
+      <div class="section-title">（  ネットスラング  ）</div>
+      <div class="board" id="net"></div>
+    </div>
+    
     <div class="reset-container">
       <button class="reset" onclick="resetGame()">RESET</button>
     </div>
@@ -322,20 +340,41 @@ header p {
 
 <script>
 const questions = {
+  language: [
+    { point: 10, q: "いちもんめ", a: "こたえ" },
+    { point: 20, q: "にもんめ", a: "こたえ" },
+    { point: 30, q: "さんもんめ", a: "こたえ" },
+    { point: 40, q: "よんもんめ", a: "（答え）" },
+    { point: 50, q: "（5問目の問題）", a: "（答え）" }
+  ],
   trivia: [
-    { point: 10, q: "タコの足は何本？", a: "8本" },
+    { point: 10, q: "いちもんめ", a: "こたえ" },
     { point: 20, q: "語源はポルトガル語の「コンフェイト」で、戦国時代に日本へ伝わった、星のような形の砂糖菓子は何？", a: "金平糖" },
-    { point: 30, q: "世界で最も面積が大きい国は？", a: "ロシア" },
+    { point: 30, q: "さんもんめ", a: "こたえ" },
+    { point: 40, q: "よんもんめ", a: "こたえ" },
+    { point: 50, q: "「カレーは飲み物」という名言を残したプロレスラーは誰？", a: "（ウガンダ・トラ）" }
+  ],
+  culture: [
+    { point: 10, q: "いちもんめ", a: "こたえ" },
+    { point: 20, q: "にもんめ", a: "答え" },
+    { point: 30, q: "57577で構成される和歌や短歌のことをその文字数からなんと呼ぶ？", a: "三十一文字(みそひともじ)" },
     { point: 40, q: "（4問目の問題）", a: "（答え）" },
     { point: 50, q: "（5問目の問題）", a: "（答え）" }
   ],
-  general: [
-    { point: 10, q: "日本の首都は？", a: "東京" },
-    { point: 20, q: "1年は何か月？", a: "12か月" },
-    { point: 30, q: "日本で一番高い山は？", a: "富士山" },
+  anime: [
+    { point: 10, q: "いちもんめ", a: "こたえ" },
+    { point: 20, q: "にもんめ", a: "こたえ" },
+    { point: 30, q: "さんもんめ", a: "こたえ" },
     { point: 40, q: "（4問目の問題）", a: "（答え）" },
     { point: 50, q: "（5問目の問題）", a: "（答え）" }
-  ]
+  ],
+  net: [
+    { point: 10, q: "いちもんめ", a: "こたえ" },
+    { point: 20, q: "にもんめ", a: "こたえ" },
+    { point: 30, q: "さんもんめ", a: "こたえ" },
+    { point: 40, q: "（4問目の問題）", a: "（答え）" },
+    { point: 50, q: "（5問目の問題）", a: "（答え）" }
+  ],
 };
 
 let score = 0;
@@ -345,10 +384,15 @@ let currentTile = null;
 function createBoard() {
   for (const category in questions) {
     const board = document.getElementById(category);
+    if (!board) continue;
+    board.innerHTML = "";
+
     questions[category].forEach((item) => {
       const button = document.createElement("button");
       button.className = "tile";
-      button.textContent = item.point + "pts";
+      
+      button.textContent = item.point;
+      
       button.onclick = () => {
         openQuestion(item, button);
       };
@@ -389,13 +433,11 @@ function closeModal() {
 }
 
 function resetGame() {
-  if (!confirm("ゲームを最初からやり直しますか？")) {
+  if (!confirm("最初からやりなおしますか？")) {
     return;
   }
   score = 0;
   document.getElementById("score").textContent = score;
-  document.getElementById("trivia").innerHTML = "";
-  document.getElementById("general").innerHTML = "";
   createBoard();
 }
 
