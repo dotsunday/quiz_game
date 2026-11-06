@@ -428,20 +428,14 @@ async function connectSupabase() {
 }
 
 const supabaseReady = connectSupabase();
-  // 現在のルーム情報
-let currentRoomId = null;
-let currentRoomKey = null;
 
-// ルーム作成
 // 現在のルーム情報
 let currentRoomId = null;
 let currentRoomKey = null;
 
 // ルーム作成
 async function createRoom() {
-  const button = document.getElementById("createRoomButton");
-  const info = document.getElementById("roomInfo");
-
+  
   button.disabled = true;
   button.textContent = "作成中...";
   info.textContent = "接続しています...";
