@@ -423,6 +423,15 @@ header p {
     ルームを作成
   </button>
 
+<button
+  class="room-button"
+  id="closeRoomButton"
+  onclick="closeRoom()"
+  style="display: none;"
+>
+  ルームを閉じる
+</button>
+
   <div class="room-info" id="roomInfo">
     まだルームは作成されていません
   </div>
@@ -579,6 +588,8 @@ async function restoreHostRoom() {
     button.textContent = "ルーム作成済み";
     button.disabled = true;
 
+document.getElementById("closeRoomButton").style.display = "block";
+
     // スコアボードを再開
     startScoreboard();
 
@@ -592,6 +603,71 @@ async function restoreHostRoom() {
 // ランキング更新用
 let rankingChannel = null;
 let buzzChannel = null;
+
+// ルームを閉じる
+async function closeRoom() {
+  if (!currentRoomId) return;
+
+  if (!confirm("ルームを閉じますか？参加者もゲームに参加できなくなります。")) {
+    return;
+  }
+
+  const button = document.getElementById("closeRoomButton");
+  button.disabled = true;
+  button.textContent = "終了処理中...";
+
+  try {
+    await supabaseReady;
+
+    const { error } = await supabaseClient.rpc("host_close_room", {
+      p_room_id: currentRoomId
+    });
+
+    if (error) throw error;
+
+    // リアルタイム監視を終了
+    if (rankingChannel) {
+      await supabaseClient.removeChannel(rankingChannel);
+      rankingChannel = null;
+    }
+
+    if (buzzChannel) {
+      await supabaseClient.removeChannel(buzzChannel);
+      buzzChannel = null;
+    }
+
+    // 保存していたルーム情報を削除
+    localStorage.removeItem("know_host_room_id");
+    localStorage.removeItem("know_host_room_code");
+
+    // 司会者側のルーム情報をリセット
+    currentRoomId = null;
+    currentRoomKey = null;
+
+    document.getElementById("roomInfo").textContent =
+      "まだルームは作成されていません";
+
+    document.getElementById("createRoomButton").textContent =
+      "ルームを作成";
+    document.getElementById("createRoomButton").disabled = false;
+
+    button.style.display = "none";
+    button.disabled = false;
+    button.textContent = "ルームを閉じる";
+
+    document.getElementById("rankingList").innerHTML =
+      '<div class="ranking-empty">参加者の入室を待っています</div>';
+
+    alert("ルームを閉じました！");
+
+  } catch (error) {
+    console.error("ルーム終了エラー:", error);
+    alert("ルームを閉じられませんでした：" + error.message);
+
+    button.disabled = false;
+    button.textContent = "ルームを閉じる";
+  }
+}
 
 // 参加者のランキングを取得
 async function loadPlayers() {
@@ -796,6 +872,8 @@ localStorage.setItem("know_host_room_code", currentRoomKey);
     // 6桁の参加コードを表示
     info.textContent = "参加コード：" + currentRoomKey;
     button.textContent = "ルーム作成済み";
+
+document.getElementById("closeRoomButton").style.display = "block";
 
     console.log("ルーム作成成功！", room);
 
