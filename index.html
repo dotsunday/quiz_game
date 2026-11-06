@@ -259,6 +259,7 @@ header p {
   cursor: pointer;
 }
 </style>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 
 <body>
@@ -339,6 +340,40 @@ header p {
 </div>
 
 <script>
+  // Supabase接続設定
+const SUPABASE_URL = "https://jdzrpditjbcnbavpadjp.supabase.co/rest/v1/
+";
+const SUPABASE_KEY = "sb_publishable_9GfTenwqD00b3hU4aBm3Mg_T2t8R6hC";
+
+const supabaseClient = window.supabase.createClient(
+  SUPABASE_URL,
+  SUPABASE_KEY
+);
+
+// 匿名ログイン
+async function connectSupabase() {
+  const { data: sessionData, error: sessionError } =
+    await supabaseClient.auth.getSession();
+
+  if (sessionError) {
+    console.error(sessionError);
+    return;
+  }
+
+  if (!sessionData.session) {
+    const { error } =
+      await supabaseClient.auth.signInAnonymously();
+
+    if (error) {
+      console.error(error);
+      return;
+    }
+  }
+
+  console.log("Supabase接続準備OK！");
+}
+
+connectSupabase();
 const questions = {
   language: [
     { point: 10, q: "いちもんめ", a: "こたえ" },
