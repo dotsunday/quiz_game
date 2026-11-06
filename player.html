@@ -504,6 +504,12 @@ async function joinGame() {
     document.getElementById("displayName").textContent = playerName;
     document.getElementById("joinScreen").style.display = "none";
     document.getElementById("gameScreen").style.display = "block";
+localStorage.setItem("know_room_code", roomCode);
+localStorage.setItem("know_player_name", playerName);
+
+// 入室情報を保存
+localStorage.setItem("know_room_code", roomCode);
+localStorage.setItem("know_player_name", playerName);
 
     await watchRoom(roomCode);
 
@@ -523,6 +529,58 @@ async function joinGame() {
 }
 
 // JavaScriptの終了
+// 再読み込み後に前の部屋へ戻る処理
+async function restoreSession() {
+  const roomCode = localStorage.getItem("know_room_code");
+  const playerName = localStorage.getItem("know_player_name");
+
+  // 保存された情報がなければ何もしない
+  if (!roomCode || !playerName) {
+    return;
+  }
+
+  try {
+    const { data: sessionData, error: sessionError } =
+      await supabaseClient.auth.getSession();
+
+    if (sessionError) throw sessionError;
+
+    // ログイン状態がなければ匿名ログイン
+    if (!sessionData.session) {
+      const { error } =
+        await supabaseClient.auth.signInAnonymously();
+
+      if (error) throw error;
+    }
+
+    // 保存された情報で部屋に再参加
+    const { error } = await supabaseClient.rpc(
+      "join_room_with_code",
+      {
+        p_room_code: roomCode,
+        p_nickname: playerName
+      }
+    );
+
+    if (error) throw error;
+
+    // 画面をゲーム画面に切り替える
+    document.getElementById("displayName").textContent = playerName;
+    document.getElementById("joinScreen").style.display = "none";
+    document.getElementById("gameScreen").style.display = "block";
+
+    // 部屋の最新情報を取得する
+    await watchRoom(roomCode);
+
+    console.log("前の部屋への復帰に成功しました！");
+
+  } catch (error) {
+    console.error("復帰エラー:", error);
+  }
+}
+
+// ページを開いたときに復帰処理を実行
+restoreSession();
 </script>
 
 </body>
