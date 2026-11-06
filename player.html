@@ -5,6 +5,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>KNOW. - Player</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <style>
 * {
@@ -278,6 +279,12 @@ footer {
         <span class="content-badge">PLAYER ENTRY</span>
       </div>
 
+<p class="label">ROOM CODE / 参加コード</p>
+<input
+  id="roomCode"
+  type="text"
+  placeholder="参加コードを入力してください"
+>
       <p class="label">YOUR NAME / ニックネーム</p>
       <input
         id="playerName"
@@ -359,17 +366,76 @@ footer {
 </div>
 
 <script>
-function joinGame() {
+// Supabase接続設定
+const SUPABASE_URL = "https://jdzrpditjbcnbavpadjp.supabase.co";
+
+// 司会者ページと同じ公開用キーを設定
+const SUPABASE_KEY = "sb_publishable_9GfTenwqD00b3hU4aBm3Mg_T2t8R6hC";
+
+const supabaseClient = window.supabase.createClient(
+  SUPABASE_URL,
+  SUPABASE_KEY
+);
+
+// 入室処理
+async function joinGame() {
   const playerName = document.getElementById("playerName").value.trim();
+  const roomCode = document.getElementById("roomCode").value.trim();
+
+  if (!roomCode) {
+    alert("参加コードを入力してください。");
+    return;
+  }
 
   if (!playerName) {
     alert("ニックネームを入力してください。");
     return;
   }
 
-  document.getElementById("displayName").textContent = playerName;
-  document.getElementById("joinScreen").style.display = "none";
-  document.getElementById("gameScreen").style.display = "block";
+  const button = document.querySelector(".main-button");
+  button.disabled = true;
+  button.textContent = "JOINING...";
+
+  try {
+    // 匿名ログイン
+    const { data: sessionData, error: sessionError } =
+      await supabaseClient.auth.getSession();
+
+    if (sessionError) throw sessionError;
+
+    if (!sessionData.session) {
+      const { error } =
+        await supabaseClient.auth.signInAnonymously();
+
+      if (error) throw error;
+    }
+
+    // 参加コードを使ってルームに入室
+    const { data, error } = await supabaseClient.rpc(
+      "join_room",
+      {
+        p_room_key: roomCode,
+        p_nickname: playerName
+      }
+    );
+
+    if (error) throw error;
+
+    // 入室成功
+    document.getElementById("displayName").textContent = playerName;
+    document.getElementById("joinScreen").style.display = "none";
+    document.getElementById("gameScreen").style.display = "block";
+
+    console.log("入室成功！", data);
+
+  } catch (error) {
+    console.error("入室エラー:", error);
+    alert("入室できませんでした。\n参加コードを確認してください。\n\n" + error.message);
+
+  } finally {
+    button.disabled = false;
+    button.textContent = "JOIN THE GAME →";
+  }
 }
 </script>
 
