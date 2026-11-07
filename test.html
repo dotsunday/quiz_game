@@ -767,7 +767,7 @@ async function loadBuzzList() {
 
   const { data: room, error: roomError } = await supabaseClient
     .from("rooms")
-    .select("current_question_number")
+    .select("current_question_number, current_answer_player_id, current_turn_index")
     .eq("id", currentRoomId)
     .single();
 
@@ -805,6 +805,24 @@ async function loadBuzzList() {
     return;
   }
 
+  // まだ回答権が設定されていなければ、1番目の人に設定
+  if (room.current_answer_player_id === null) {
+    const firstPlayerId = data[0].player_id;
+
+    const { error: updateError } = await supabaseClient
+      .from("rooms")
+      .update({
+        current_answer_player_id: firstPlayerId,
+        current_turn_index: 0
+      })
+      .eq("id", currentRoomId);
+
+    if (updateError) {
+      console.error("最初の回答権設定エラー:", updateError);
+    }
+  }
+
+  // 早押し順を表示
   data.forEach((answer) => {
     const player = players.find(p => p.id === answer.player_id);
     if (!player) return;
@@ -1077,14 +1095,79 @@ async function openBuzzer() {
   loadBuzzList();
 }
 
-function judge(isCorrect) {
+// 正解・不正解の判定
+async function judge(isCorrect) {
+
+  // 正解の場合
   if (isCorrect) {
-  score += 3;
+    score += 3;
+
+    document.getElementById("score").textContent = score;
+
+    currentTile.disabled = true;
+    currentTile.textContent = "USED";
+
+    closeModal();
+    return;
   }
-  document.getElementById("score").textContent = score;
-  currentTile.disabled = true;
-  currentTile.textContent = "USED";
-  closeModal();
+
+  // 不正解の場合、次の人に回答権を移す
+  const { data: room, error: roomError } = await supabaseClient
+    .from("rooms")
+    .select("current_question_number, current_answer_player_id")
+    .eq("id", currentRoomId)
+    .single();
+
+  if (roomError) {
+    alert("ルーム情報を取得できませんでした：" + roomError.message);
+    return;
+  }
+
+  const { data, error } = await supabaseClient
+    .from("answers")
+    .select("player_id, buzz_order")
+    .eq("room_id", currentRoomId)
+    .eq("question_number", room.current_question_number)
+    .order("buzz_order", { ascending: true });
+
+  if (error) {
+    alert("早押し順を取得できませんでした：" + error.message);
+    return;
+  }
+
+  if (!data || data.length === 0) {
+    alert("早押しした参加者がいません。");
+    return;
+  }
+
+  // 現在回答権がある人の位置を探す
+  const currentIndex = data.findIndex(
+    answer => answer.player_id === room.current_answer_player_id
+  );
+
+  if (currentIndex === -1) {
+    alert("現在の回答者を確認できませんでした。");
+    return;
+  }
+
+  // 次の人へ移動。最後の人の次は最初の人。
+  const nextIndex = (currentIndex + 1) % data.length;
+  const nextPlayerId = data[nextIndex].player_id;
+
+  const { error: updateError } = await supabaseClient
+    .from("rooms")
+    .update({
+      current_answer_player_id: nextPlayerId,
+      current_turn_index: nextIndex
+    })
+    .eq("id", currentRoomId);
+
+  if (updateError) {
+    alert("回答権を移動できませんでした：" + updateError.message);
+    return;
+  }
+
+  console.log("次の回答者に移動しました！");
 }
 
 function closeModal() {
