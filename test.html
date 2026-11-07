@@ -387,6 +387,17 @@ header p {
   font-weight: 700;
   overflow-wrap: anywhere;
 }
+
+.tile .level-label {
+  font-size: 0.65em;
+  font-weight: normal;
+}
+
+.tile .level-number {
+  font-size: 1.4em;
+  font-weight: bold;
+}
+
 </style>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
@@ -956,24 +967,13 @@ let currentQuestion = null;
 let currentTile = null;
 
 function createBoard() {
-  for (const category in questions) {
-    const board = document.getElementById(category);
-    if (!board) continue;
-    board.innerHTML = "";
-
-    questions[category].forEach((item) => {
-      const button = document.createElement("button");
-      button.className = "tile";
-      
-      button.textContent =
-  item.level === "MAX" ? "MAX" : "LEVEL " + item.level;
-      
-      button.onclick = () => {
-        openQuestion(item, button);
-      };
-      board.appendChild(button);
-    });
-  }
+ if (item.level === "MAX") {
+  button.innerHTML = '<span class="level-label">MAX</span>';
+} else {
+  button.innerHTML =
+    '<span class="level-label">Lv.</span>' +
+    '<span class="level-number">' + item.level + '</span>';
+}
 }
 
 async function openQuestion(item, tile) {
