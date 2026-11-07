@@ -980,7 +980,8 @@ async function openQuestion(item, tile) {
   currentQuestion = item;
   currentTile = tile;
 
-  document.getElementById("questionTitle").textContent = item.point + " POINTS";
+ document.getElementById("questionTitle").textContent =
+  item.level === "MAX" ? "MAX LEVEL" : "LEVEL " + item.level;
   document.getElementById("question").textContent = item.q;
   document.getElementById("answer").textContent = "正解：" + item.a;
   document.getElementById("answer").style.display = "none";
