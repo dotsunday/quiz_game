@@ -473,11 +473,6 @@ header p {
     </div>
 
     <div class="board-group">
-      <div class="section-title">（  雑学  ）</div>
-      <div class="board" id="trivia"></div>
-    </div>
-
-    <div class="board-group">
       <div class="section-title">（  文化・芸術  ）</div>
       <div class="board" id="culture"></div>
     </div>
@@ -490,6 +485,11 @@ header p {
     <div class="board-group">
       <div class="section-title">（  ネットスラング  ）</div>
       <div class="board" id="net"></div>
+    </div>
+
+        <div class="board-group">
+      <div class="section-title">（  雑学  ）</div>
+      <div class="board" id="trivia"></div>
     </div>
     
     <div class="reset-container">
@@ -928,14 +928,6 @@ const questions = {
     { level: 5, type: "buzzer", q: "（5問目の問題）", a: "（答え）" },
     { level: "MAX", type: "buzzer", q: "（MAX問題）", a: "（答え）" }
   ],
-  trivia: [
-    { level: 1, type: "buzzer", q: "いちもんめ", a: "こたえ" },
-    { level: 2, type: "buzzer", q: "語源はポルトガル語の「コンフェイト」で、戦国時代に日本へ伝わった、星のような形の砂糖菓子は何？", a: "金平糖" },
-    { level: 3, type: "buzzer", q: "さんもんめ", a: "こたえ" },
-    { level: 4, type: "buzzer", q: "よんもんめ", a: "こたえ" },
-    { level: 5, type: "buzzer", q: "「カレーは飲み物」という名言を残したプロレスラーは誰？", a: "（ウガンダ・トラ）" },
-    { level: "MAX", type: "buzzer", q: "（MAX問題）", a: "（答え）" }
-  ],
   culture: [
     { level: 1, type: "buzzer", q: "いちもんめ", a: "こたえ" },
     { level: 2, type: "buzzer", q: "にもんめ", a: "答え" },
@@ -960,6 +952,14 @@ const questions = {
     { level: 5, type: "buzzer", q: "（5問目の問題）", a: "（答え）" },
     { level: "MAX", type: "buzzer", q: "（MAX問題）", a: "（答え）" }
   ]
+  trivia: [
+    { level: 1, type: "buzzer", q: "いちもんめ", a: "こたえ" },
+    { level: 2, type: "buzzer", q: "語源はポルトガル語の「コンフェイト」で、戦国時代に日本へ伝わった、星のような形の砂糖菓子は何？", a: "金平糖" },
+    { level: 3, type: "buzzer", q: "さんもんめ", a: "こたえ" },
+    { level: 4, type: "buzzer", q: "よんもんめ", a: "こたえ" },
+    { level: 5, type: "buzzer", q: "「カレーは飲み物」という名言を残したプロレスラーは誰？", a: "（ウガンダ・トラ）" },
+    { level: "MAX", type: "buzzer", q: "（MAX問題）", a: "（答え）" }
+  ],
 };
 
 let score = 0;
