@@ -910,40 +910,45 @@ document.getElementById("closeRoomButton").style.display = "block";
 
 const questions = {
   language: [
-    { point: 10, q: "いちもんめ", a: "こたえ" },
-    { point: 20, q: "にもんめ", a: "こたえ" },
-    { point: 30, q: "さんもんめ", a: "こたえ" },
-    { point: 40, q: "よんもんめ", a: "（答え）" },
-    { point: 50, q: "（5問目の問題）", a: "（答え）" }
+    { level: 1, type: "buzzer", q: "いちもんめ", a: "こたえ" },
+    { level: 2, type: "buzzer", q: "にもんめ", a: "こたえ" },
+    { level: 3, type: "buzzer", q: "さんもんめ", a: "こたえ" },
+    { level: 4, type: "buzzer", q: "よんもんめ", a: "（答え）" },
+    { level: 5, type: "buzzer", q: "（5問目の問題）", a: "（答え）" },
+    { level: "MAX", type: "buzzer", q: "（MAX問題）", a: "（答え）" }
   ],
   trivia: [
-    { point: 10, q: "いちもんめ", a: "こたえ" },
-    { point: 20, q: "語源はポルトガル語の「コンフェイト」で、戦国時代に日本へ伝わった、星のような形の砂糖菓子は何？", a: "金平糖" },
-    { point: 30, q: "さんもんめ", a: "こたえ" },
-    { point: 40, q: "よんもんめ", a: "こたえ" },
-    { point: 50, q: "「カレーは飲み物」という名言を残したプロレスラーは誰？", a: "（ウガンダ・トラ）" }
+    { level: 1, type: "buzzer", q: "いちもんめ", a: "こたえ" },
+    { level: 2, type: "buzzer", q: "語源はポルトガル語の「コンフェイト」で、戦国時代に日本へ伝わった、星のような形の砂糖菓子は何？", a: "金平糖" },
+    { level: 3, type: "buzzer", q: "さんもんめ", a: "こたえ" },
+    { level: 4, type: "buzzer", q: "よんもんめ", a: "こたえ" },
+    { level: 5, type: "buzzer", q: "「カレーは飲み物」という名言を残したプロレスラーは誰？", a: "（ウガンダ・トラ）" },
+    { level: "MAX", type: "buzzer", q: "（MAX問題）", a: "（答え）" }
   ],
   culture: [
-    { point: 10, q: "いちもんめ", a: "こたえ" },
-    { point: 20, q: "にもんめ", a: "答え" },
-    { point: 30, q: "57577で構成される和歌や短歌のことをその文字数からなんと呼ぶ？", a: "三十一文字(みそひともじ)" },
-    { point: 40, q: "（4問目の問題）", a: "（答え）" },
-    { point: 50, q: "（5問目の問題）", a: "（答え）" }
+    { level: 1, type: "buzzer", q: "いちもんめ", a: "こたえ" },
+    { level: 2, type: "buzzer", q: "にもんめ", a: "答え" },
+    { level: 3, type: "buzzer", q: "57577で構成される和歌や短歌のことをその文字数からなんと呼ぶ？", a: "三十一文字(みそひともじ)" },
+    { level: 4, type: "buzzer", q: "（4問目の問題）", a: "（答え）" },
+    { level: 5, type: "buzzer", q: "（5問目の問題）", a: "（答え）" },
+    { level: "MAX", type: "buzzer", q: "（MAX問題）", a: "（答え）" }
   ],
   anime: [
-    { point: 10, q: "いちもんめ", a: "こたえ" },
-    { point: 20, q: "にもんめ", a: "こたえ" },
-    { point: 30, q: "さんもんめ", a: "こたえ" },
-    { point: 40, q: "（4問目の問題）", a: "（答え）" },
-    { point: 50, q: "（5問目の問題）", a: "（答え）" }
+    { level: 1, type: "buzzer", q: "いちもんめ", a: "こたえ" },
+    { level: 2, type: "buzzer", q: "にもんめ", a: "こたえ" },
+    { level: 3, type: "buzzer", q: "さんもんめ", a: "こたえ" },
+    { level: 4, type: "buzzer", q: "（4問目の問題）", a: "（答え）" },
+    { level: 5, type: "buzzer", q: "（5問目の問題）", a: "（答え）" },
+    { level: "MAX", type: "buzzer", q: "（MAX問題）", a: "（答え）" }
   ],
   net: [
-    { point: 10, q: "いちもんめ", a: "こたえ" },
-    { point: 20, q: "にもんめ", a: "こたえ" },
-    { point: 30, q: "さんもんめ", a: "こたえ" },
-    { point: 40, q: "（4問目の問題）", a: "（答え）" },
-    { point: 50, q: "（5問目の問題）", a: "（答え）" }
-  ],
+    { level: 1, type: "buzzer", q: "いちもんめ", a: "こたえ" },
+    { level: 2, type: "buzzer", q: "にもんめ", a: "こたえ" },
+    { level: 3, type: "buzzer", q: "さんもんめ", a: "こたえ" },
+    { level: 4, type: "buzzer", q: "（4問目の問題）", a: "（答え）" },
+    { level: 5, type: "buzzer", q: "（5問目の問題）", a: "（答え）" },
+    { level: "MAX", type: "buzzer", q: "（MAX問題）", a: "（答え）" }
+  ]
 };
 
 let score = 0;
