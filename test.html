@@ -967,13 +967,31 @@ let currentQuestion = null;
 let currentTile = null;
 
 function createBoard() {
- if (item.level === "MAX") {
-  button.innerHTML = '<span class="level-label">MAX</span>';
-} else {
-  button.innerHTML =
-    '<span class="level-label">Lv.</span>' +
-    '<span class="level-number">' + item.level + '</span>';
-}
+  Object.keys(questions).forEach(category => {
+    const board = document.getElementById(category);
+
+    if (!board) return;
+
+    board.innerHTML = "";
+
+    questions[category].forEach(item => {
+      const button = document.createElement("button");
+      button.className = "tile";
+
+      if (item.level === "MAX") {
+        button.innerHTML =
+          '<span class="level-label">MAX</span>';
+      } else {
+        button.innerHTML =
+          '<span class="level-label">Lv.</span>' +
+          '<span class="level-number">' + item.level + '</span>';
+      }
+
+      button.onclick = () => openQuestion(item, button);
+
+      board.appendChild(button);
+    });
+  });
 }
 
 async function openQuestion(item, tile) {
