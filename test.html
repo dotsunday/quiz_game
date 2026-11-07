@@ -965,7 +965,8 @@ function createBoard() {
       const button = document.createElement("button");
       button.className = "tile";
       
-      button.textContent = item.point;
+      button.textContent =
+  item.level === "MAX" ? "MAX" : "LEVEL " + item.level;
       
       button.onclick = () => {
         openQuestion(item, button);
