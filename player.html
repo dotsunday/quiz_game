@@ -397,6 +397,9 @@ const supabaseClient = window.supabase.createClient(
 // 現在参加しているルーム
 let playerRoomId = null;
 
+// 自分の参加者ID
+let currentPlayerId = null;
+
 // ルームの更新を監視するチャンネル
 let playerRoomChannel = null;
 
@@ -413,7 +416,7 @@ const categoryNames = {
 async function watchRoom(roomCode) {
   const { data: room, error } = await supabaseClient
     .from("rooms")
-  .select("id, status, current_question_text, current_question_category, current_points, question_status, buzz_open")
+.select("id, status, current_question_text, current_question_category, current_points, question_status, buzz_open, current_answer_player_id, current_turn_index")
     .eq("room_code", roomCode)
     .single();
 
@@ -424,6 +427,22 @@ async function watchRoom(roomCode) {
   }
 
   playerRoomId = room.id;
+// 自分の参加者IDを取得
+const { data: userData, error: userError } =
+  await supabaseClient.auth.getUser();
+
+if (userError) throw userError;
+
+const { data: player, error: playerError } = await supabaseClient
+  .from("players")
+  .select("id")
+  .eq("room_id", playerRoomId)
+  .eq("user_id", userData.user.id)
+  .single();
+
+if (playerError) throw playerError;
+
+currentPlayerId = player.id;
 
   // 現在の問題を画面に表示
   updateQuestionScreen(room);
