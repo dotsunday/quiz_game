@@ -415,6 +415,15 @@ let currentPlayerId = null;
 // ルームの更新を監視するチャンネル
 let playerRoomChannel = null;
 
+// 得点の更新を監視するチャンネル
+let playerScoreChannel = null;
+
+// 現在の問題番号
+let currentQuestionNumber = null;
+
+// 自分の早押し順位
+let myBuzzOrder = null;
+
 // ジャンル名を日本語に変換
 const categoryNames = {
   language: "文学",
@@ -424,11 +433,10 @@ const categoryNames = {
   net: "ネットスラング"
 };
 
-// 参加中のルーム情報を取得
 async function watchRoom(roomCode) {
   const { data: room, error } = await supabaseClient
     .from("rooms")
-.select("id, status, current_question_text, current_question_category, current_points, question_status, buzz_open, current_answer_player_id, current_turn_index")
+    .select("id, status, current_question_number, current_question_text, current_question_category, current_points, question_status, buzz_open, current_answer_player_id, current_turn_index")
     .eq("room_code", roomCode)
     .single();
 
@@ -439,32 +447,35 @@ async function watchRoom(roomCode) {
   }
 
   playerRoomId = room.id;
-// 自分の参加者IDを取得
-const { data: userData, error: userError } =
-  await supabaseClient.auth.getUser();
 
-if (userError) throw userError;
+  const { data: userData, error: userError } =
+    await supabaseClient.auth.getUser();
 
-const { data: player, error: playerError } = await supabaseClient
-  .from("players")
-  .select("id")
-  .eq("room_id", playerRoomId)
-  .eq("user_id", userData.user.id)
-  .single();
+  if (userError) throw userError;
 
-if (playerError) throw playerError;
+  const { data: player, error: playerError } = await supabaseClient
+    .from("players")
+    .select("id")
+    .eq("room_id", playerRoomId)
+    .eq("user_id", userData.user.id)
+    .single();
 
-currentPlayerId = player.id;
+  if (playerError) throw playerError;
 
-  // 現在の問題を画面に表示
-  updateQuestionScreen(room);
+  currentPlayerId = player.id;
 
-  // 以前の監視があれば終了
+  await updateQuestionScreen(room);
+  await loadMyScore();
+
   if (playerRoomChannel) {
     await supabaseClient.removeChannel(playerRoomChannel);
   }
 
-  // ルーム情報の変更をリアルタイムで監視
+  if (playerScoreChannel) {
+    await supabaseClient.removeChannel(playerScoreChannel);
+  }
+
+  // ルーム情報の更新を監視
   playerRoomChannel = supabaseClient
     .channel("player-room-" + playerRoomId)
     .on(
@@ -480,8 +491,41 @@ currentPlayerId = player.id;
       }
     )
     .subscribe();
+
+  // 自分の得点の更新を監視
+  playerScoreChannel = supabaseClient
+    .channel("player-score-" + currentPlayerId)
+    .on(
+      "postgres_changes",
+      {
+        event: "UPDATE",
+        schema: "public",
+        table: "players",
+        filter: "id=eq." + currentPlayerId
+      },
+      (payload) => {
+        document.getElementById("displayScore").textContent =
+          (payload.new.score || 0) + " pts";
+      }
+    )
+    .subscribe();
 }
 
+async function loadMyScore() {
+  const { data, error } = await supabaseClient
+    .from("players")
+    .select("score")
+    .eq("id", currentPlayerId)
+    .single();
+
+  if (error) {
+    console.error("得点取得エラー:", error);
+    return;
+  }
+
+  document.getElementById("displayScore").textContent =
+    (data.score || 0) + " pts";
+}
 
 // 問題画面を更新
 function updateQuestionScreen(room) {
