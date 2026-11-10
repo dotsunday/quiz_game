@@ -536,6 +536,12 @@ function updateQuestionScreen(room) {
   const buzzerButton = document.getElementById("buzzerButton");
   const turnMessage = document.getElementById("turnMessage");
 
+  // 新しい問題になったら早押し状態をリセット
+  if (currentQuestionNumber !== room.current_question_number) {
+    currentQuestionNumber = room.current_question_number;
+    myBuzzOrder = null;
+  }
+
   // ルーム終了時
   if (room.status === "closed") {
     questionCategory.textContent = "GAME OVER";
@@ -562,15 +568,19 @@ function updateQuestionScreen(room) {
   questionCategory.textContent = category;
   questionText.textContent = room.current_question_text;
 
-  // 問題が開始されているか確認
   const isActive = room.question_status === "active";
 
   waitingMessage.style.display = isActive ? "none" : "block";
   answerArea.style.display = isActive ? "block" : "none";
 
   // BUZZERの状態を更新
-  buzzerButton.disabled = !(isActive && room.buzz_open);
-  buzzerButton.textContent = "BUZZER !";
+  if (myBuzzOrder !== null) {
+    buzzerButton.disabled = true;
+    buzzerButton.textContent = myBuzzOrder + "番目！";
+  } else {
+    buzzerButton.disabled = !(isActive && room.buzz_open);
+    buzzerButton.textContent = "BUZZER !";
+  }
 
   // 自分に回答権があるか確認
   const isMyTurn =
@@ -579,35 +589,6 @@ function updateQuestionScreen(room) {
     room.current_answer_player_id === currentPlayerId;
 
   turnMessage.style.display = isMyTurn ? "block" : "none";
-}
-
-// BUZZERを押したときの処理
-async function pressBuzzer() {
-  const buzzerButton = document.getElementById("buzzerButton");
-
-  if (!playerRoomId || buzzerButton.disabled) return;
-
-  buzzerButton.disabled = true;
-  buzzerButton.textContent = "受付中...";
-
-  try {
-    const { data, error } = await supabaseClient.rpc("submit_buzz", {
-      p_room_id: playerRoomId
-    });
-
-    if (error) throw error;
-
-    const result = Array.isArray(data) ? data[0] : data;
-
-    if (!result) throw new Error("早押し結果を取得できませんでした");
-
-    buzzerButton.textContent = result.buzz_order + "番目！";
-
-  } catch (error) {
-    console.error("早押しエラー:", error);
-    buzzerButton.textContent = "BUZZER !";
-    alert("早押しを受け付けられませんでした。\n" + error.message);
-  }
 }
 
 // 入室処理
