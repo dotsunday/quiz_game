@@ -591,6 +591,40 @@ function updateQuestionScreen(room) {
   turnMessage.style.display = isMyTurn ? "block" : "none";
 }
 
+// BUZZERを押したときの処理
+async function pressBuzzer() {
+  const buzzerButton = document.getElementById("buzzerButton");
+
+  if (!playerRoomId || !currentPlayerId) return;
+
+  buzzerButton.disabled = true;
+  buzzerButton.textContent = "受付中...";
+
+  try {
+    const { data, error } = await supabaseClient.rpc("submit_buzz", {
+      p_room_id: playerRoomId
+    });
+
+    if (error) throw error;
+
+    const result = data?.[0];
+
+    if (!result) {
+      throw new Error("受付結果を取得できませんでした。");
+    }
+
+    myBuzzOrder = result.buzz_order;
+    buzzerButton.textContent = myBuzzOrder + "番目！";
+
+  } catch (error) {
+    console.error("早押しエラー:", error);
+    alert("早押しに失敗しました。\n" + error.message);
+
+    buzzerButton.disabled = false;
+    buzzerButton.textContent = "BUZZER !";
+  }
+}
+
 // 入室処理
 async function joinGame() {
   const playerName = document.getElementById("playerName").value.trim();
