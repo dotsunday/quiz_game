@@ -1105,6 +1105,10 @@ async function openBuzzer() {
   loadBuzzList();
 }
 
+// 問題パネルを閉じる
+function closeModal() {
+  document.getElementById("modal").style.display = "none";
+}
 
 async function judge(isCorrect) {
   // 現在の問題情報を取得
