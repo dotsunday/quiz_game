@@ -1190,17 +1190,28 @@ async function judge(isCorrect) {
 
   const points = room.current_points || 3;
 
-  const { error: scoreError } = await supabaseClient
+  const { data: updatedPlayer, error: scoreError } = await supabaseClient
     .from("players")
     .update({
       score: (player.score || 0) + points
     })
-    .eq("id", room.current_answer_player_id);
+    .eq("id", room.current_answer_player_id)
+    .select("id, score");
 
   if (scoreError) {
     alert("得点を保存できませんでした：" + scoreError.message);
     return;
   }
+
+  if (!updatedPlayer || updatedPlayer.length === 0) {
+    alert("点数を更新できませんでした。参加者の情報を確認してください。");
+    return;
+  }
+
+  // ランキングを読み直す
+  await loadPlayers();
+
+  console.log("得点を加算しました！", updatedPlayer);
 
   // 正解したら早押し受付を終了
   const { error: finishError } = await supabaseClient
